@@ -2,14 +2,26 @@
 <html ng-app>
 
 <head>
-  <title>My HTML File</title>
+  <title>PARA-CHECKFOOD : Ang. 0</title>
   <script src="angular.min.js"></script>
 </head>
 
 <body>
+   
   moi aussi je sais concaténer : {{"Mon" + "seigneur"}}
   
   <p>mais aussi compter ! 1+1= {{1 + 1}}</p>
+
+
+  <div style="border:2px solid black"
+       ng-init="gens=[{nom:&quot;Robert&quot;,age:666,couleur:&quot;green&quot;}]">
+
+    <div ng-repeat="personne in gens" style="background-color: {{personne.couleur}};">
+      {{personne.nom}}
+      <input type="number" value="{{personne.age}}" />
+    </div>
+  </div>
+
 
 </body>
 
