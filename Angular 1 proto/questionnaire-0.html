@@ -9,24 +9,29 @@
 
 <script>
   var app = angular.module('DummyApp', []);
-  app.controller('GensController', function ($scope) {
-    $scope.gens = [
+  app.controller('GensController', function () {
+    this.gens = [
       { nom: "Robert", age: 666, couleur: "green" },
       { nom: "Mégane", age: 22, couleur: "pink" },
       { nom: "Michael", age: 39, couleur: "#4aa" }
     ];
+
+    this.totalAge = function(){
+      return this.gens.map(p => p.age).reduce((total, inc) => total + inc);
+    };
   });
 </script>
 
 <body>
 
-  <div style="border:2px solid black" ng-controller="GensController">
-    <div ng-repeat="personne in gens" style="background-color: {{personne.couleur}};">
-      {{personne.nom}} âgé de {{personne.age}}
+  <div style="border:2px solid black" ng-controller="GensController as gensCtrl">
+    <b>Total = {{gensCtrl.totalAge()}} ans</b>
+
+    <div ng-repeat="personne in gensCtrl.gens" style="background-color: {{personne.couleur}};">
+      {{personne.nom}} âgé de
       <input type="number" ng-model="personne.age" />
     </div>
   </div>
-
 
 </body>
 
