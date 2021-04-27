@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app>
+<html ng-app="DummyApp">
 
 <head>
   <meta charset="utf-8">
@@ -8,23 +8,26 @@
 </head>
 
 <script>
- var gens = [
-   {nom:"Robert", age:666, couleur:"green"},
-   {nom:"Mégane", age:22 , couleur:"pink"},
-   {nom:"Michael", age:39, couleur:"#4aa"}
- ];
+  var app = angular.module('DummyApp', []);
+  app.controller('GensController', function ($scope) {
+    $scope.gens = [
+      { nom: "Robert", age: 666, couleur: "green" },
+      { nom: "Mégane", age: 22, couleur: "pink" },
+      { nom: "Michael", age: 39, couleur: "#4aa" }
+    ];
+  });
 </script>
 
 <body>
 
-  <div style="border:2px solid black">
+  <div style="border:2px solid black" ng-controller="GensController">
     <div ng-repeat="personne in gens" style="background-color: {{personne.couleur}};">
       {{personne.nom}}
       <input type="number" value="{{personne.age}}" />
     </div>
   </div>
 
-  
+
 </body>
 
 </html>
