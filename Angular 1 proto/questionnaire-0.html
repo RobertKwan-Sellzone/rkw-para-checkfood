@@ -22,8 +22,8 @@
 
   <div style="border:2px solid black" ng-controller="GensController">
     <div ng-repeat="personne in gens" style="background-color: {{personne.couleur}};">
-      {{personne.nom}}
-      <input type="number" value="{{personne.age}}" />
+      {{personne.nom}} âgé de {{personne.age}}
+      <input type="number" ng-model="personne.age" />
     </div>
   </div>
 
