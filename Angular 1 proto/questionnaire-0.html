@@ -2,27 +2,29 @@
 <html ng-app>
 
 <head>
+  <meta charset="utf-8">
   <title>PARA-CHECKFOOD : Ang. 0</title>
   <script src="angular.min.js"></script>
 </head>
 
+<script>
+ var gens = [
+   {nom:"Robert", age:666, couleur:"green"},
+   {nom:"Mégane", age:22 , couleur:"pink"},
+   {nom:"Michael", age:39, couleur:"#4aa"}
+ ];
+</script>
+
 <body>
-   
-  moi aussi je sais concaténer : {{"Mon" + "seigneur"}}
-  
-  <p>mais aussi compter ! 1+1= {{1 + 1}}</p>
 
-
-  <div style="border:2px solid black"
-       ng-init="gens=[{nom:&quot;Robert&quot;,age:666,couleur:&quot;green&quot;}]">
-
+  <div style="border:2px solid black">
     <div ng-repeat="personne in gens" style="background-color: {{personne.couleur}};">
       {{personne.nom}}
       <input type="number" value="{{personne.age}}" />
     </div>
   </div>
 
-
+  
 </body>
 
 </html>
