@@ -9,7 +9,7 @@
 
 <script>
   var app = angular.module('DummyApp', []);
-  app.controller('GensController', function () {
+  app.controller('GensController', function ($http) {
     this.gens = [
       { nom: "Robert", age: 666, couleur: "green" },
       { nom: "Mégane", age: 22, couleur: "pink" },
@@ -18,6 +18,16 @@
 
     this.totalAge = function(){
       return this.gens.map(p => p.age).reduce((total, inc) => total + inc);
+    };
+    
+    this.send = function(){
+      console.log(this.gens);
+      $http.post("http://localhost:80/storeThis", this.gens);
+    };
+
+    this.addPersonne = function(){
+      this.gens.push({});
+      //this.gens.push({nom:"default name", age:0});
     };
   });
 </script>
@@ -28,9 +38,12 @@
     <b>Total = {{gensCtrl.totalAge()}} ans</b>
 
     <div ng-repeat="personne in gensCtrl.gens" style="background-color: {{personne.couleur}};">
-      {{personne.nom}} âgé de
+      <input type="text" ng-model="personne.nom" /> âgé de
       <input type="number" ng-model="personne.age" />
     </div>
+    
+    <button ng-click="gensCtrl.send()" >Fire me up</button>
+    <button ng-click="gensCtrl.addPersonne()" >+</button> (don't do this yet !)
   </div>
 
 </body>
