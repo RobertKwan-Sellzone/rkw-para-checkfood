@@ -23,6 +23,8 @@
     this.send = function(){
       console.log(this.gens);
       $http.post("http://localhost:80/storeThis", this.gens);
+      /* note : $http.post() uses angular.toJson() instead of JSON.stringify,
+       and THAT MAKES A DIFFERENCE ! */
     };
 
     this.addPersonne = function(){
@@ -37,6 +39,7 @@
   <div style="border:2px solid black" ng-controller="GensController as gensCtrl">
     <b>Total = {{gensCtrl.totalAge()}} ans</b>
 
+    <!-- This div IS "the row template", thanks to a single attribute ng-repeat -->
     <div ng-repeat="personne in gensCtrl.gens" style="background-color: {{personne.couleur}};">
       <input type="text" ng-model="personne.nom" /> âgé de
       <input type="number" ng-model="personne.age" />
@@ -46,6 +49,12 @@
     <button ng-click="gensCtrl.addPersonne()" >+</button> (don't do this yet !)
   </div>
 
+
+  <h1>And now, for something completely different</h1>
+  <div ng-controller="GensController as dummy" style="{{dummy.sometext}}:red" {{dummy.sometext}}>
+    type things : <input type="text" ng-model="dummy.sometext" />
+    {{dummy.sometext}}
+  </div>
 </body>
 
 </html>

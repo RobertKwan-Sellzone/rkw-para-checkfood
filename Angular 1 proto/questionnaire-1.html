@@ -1,5 +1,5 @@
 <!doctype html>
-<html ng-app>
+<html ng-app="LCQ-fillform">
 
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,147 @@
 
 <body>
 
-    Not implemented :-)
+  <script>
+
+    /* Item types */
+    class AbstractItem {
+      constructor(itemLabel){
+        this.itemLabel = itemLabel;
+      }
+      /* for template switching */
+      getTypeName() { return this.constructor.name; }
+
+      /* assess validity of user input.
+      TODO redefine scope of this, according to warning levels spec */
+      validate(){
+        throw "validate() not implemented in child item type";
+      }
+    }
+
+    class ItemCheckOK extends AbstractItem {
+      static OK = "ok"; /* "static const" only in an ES7 proposal O_o */
+      static KO = "ko";
+      static NONE = "none";
+
+      constructor(itemLabel, nok_warnLvl) {
+        super(itemLabel);
+        this.value = ItemCheckOK.NONE;
+        this.nok_warnLvl = nok_warnLvl ? nok_warnLvl : "white"; /* TODO ne plus traiter les niveaux comme des couleurs !!! */
+      }
+
+      validate() {
+        switch (this.value){
+          case ItemCheckOK.OK : return "green";
+          case ItemCheckOK.KO : return this.nok_warnLvl; /* TODO convertir les niveaux en nombres ? mettre ça en specs après retour client */
+          case ItemCheckOK.NONE : return "lightgrey";
+        }
+      }
+    }
+
+    class ItemTemperature extends AbstractItem {
+      /* Note : demo of fluent interface for all the constraints instead of a 6 args-constructor */
+      default(temp) { this.value = temp; return this; };
+      min_orange(temp) { this.min_orange = temp; return this; };
+      max_orange(temp) { this.max_orange = temp; return this; };
+      min_rouge(temp) { this.min_rouge = temp; return this; };
+      max_rouge(temp) { this.max_rouge = temp; return this; };
+      validate() {
+        if (this.value > this.max_rouge || this.value < this.min_rouge) return "red";
+        else if (this.value > this.max_orange || this.value < this.min_orange) return "orange";
+        else return "green";
+      }
+    }
+
+    class ItemContentLevel extends AbstractItem {
+      constructor(itemLabel, max_orange, max_rouge) {
+        super(itemLabel);
+        this.max_orange = max_orange;   /* TODO are there potentially minimal thresholds ? */
+        this.max_rouge = max_rouge;
+        this.value = 0; /* TODO default value ? specs ? */
+      }
+      validate() {
+        if (this.value > this.max_rouge) return "red";
+        else if (this.value > this.max_orange) return "orange";
+        else return "green";
+      }
+    }
+
+
+    var app = angular.module('LCQ-fillform', []);
+    app.controller('LCQ-FormCtrl', function () {
+      this.forms = [
+        {
+          formName: "Conservation des produits",
+          items: [
+            new ItemCheckOK("DLC primaire", "red"),
+            new ItemCheckOK("DLC secondaire", "red"),
+            new ItemCheckOK("Rotation et Présence étiquette", "red"),
+            new ItemCheckOK("Produits protégés et filmés", "red"),
+            new ItemCheckOK("<dummy> Un truc moyen important", "orange"),
+            new ItemCheckOK("<dummy> Un truc pas important"),
+          ]
+        },
+        {
+          formName: "Huiles de cuisson",
+          items: [
+            new ItemTemperature("Bac 1 - Température de programmation").default(170).min_orange(165),
+            new ItemCheckOK("Bac 1 - Niveau d'huile", "orange"),
+            new ItemContentLevel("Bac 1 - Relevé du composé polaire", 20, 22),
+          ]
+        },
+      ];
+
+      this.logMe = function () {
+        console.log(this.forms);
+      };
+    });
+
+
+
+  </script>
+
+  <body>
+
+    <div style="border:2px solid black" ng-controller="LCQ-FormCtrl as ctrl">
+
+      <!-- 
+       <div ng-init="form = ctrl.forms[0]">
+       -->
+      <div style="border:2px inset blue" ng-repeat="form in ctrl.forms" >
+        <H1>{{form.formName}}</H1>
+        <table>
+          <tr ng-repeat="formItem in form.items">
+            <td>{{formItem.itemLabel}}</td>
+
+            <td style="background-color:{{formItem.validate()}}" ng-switch="formItem.getTypeName()" >
+              <!-- TODO warning rendering : of course, more flexibility with a CSS class ;-) -->
+
+              <div ng-switch-when="ItemCheckOK">
+                <input type="radio" ng-model="formItem.value" value="ok">OK
+                <input type="radio" ng-model="formItem.value" value="ko">Pas OK
+                <input type="radio" ng-model="formItem.value" value="none">Pas fait
+                <!-- TODO: a more caring person would have used <label>... and probably $index ;-) -->  
+              </div>
+              <div ng-switch-when="ItemTemperature">
+                <input type="number" ng-model="formItem.value" step="0.1">°C
+              </div>
+              <div ng-switch-when="ItemContentLevel">
+                <input type="number" ng-model="formItem.value" step="0.1">%
+              </div>
+              <div ng-switch-default>
+                UNSUPPORTED ITEM TYPE
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+
+      <button ng-click="ctrl.logMe()">LOG ME TENDER</button>
+    </div>
+
+
+  </body>
 
 </body>
 
