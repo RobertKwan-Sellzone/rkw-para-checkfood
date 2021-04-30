@@ -18,41 +18,61 @@
 
     <!-- Charge le composant React -->
     <script type="text/babel">
-        function Identite(props) {
-            return (
-                <li style={{ backgroundColor: props.bg }}>
-                    <div>{props.name + " âgé de "}
-                        <input type="number" value={props.age} /></div>
-                </li>
-            );
+
+        var list = [{ nom: 'Robert', age: 46, background: 'pink' },
+        { nom: 'Michael', age: 39, background: 'cyan' },
+        { nom: 'Jose', age: 22, background: 'gray' }];
+
+        var listAge = list.map(ages => ages.age);
+
+        class Identite extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = { age: listAge }
+            }
+
+            updateAge(event) {
+                this.setState({ age: event.target.value });
+            }
+
+            render() {
+                return (
+                    <li style={{ backgroundColor: this.props.bg }}>
+                        <div>{this.props.name + " âgé de "}
+                            <input type="number" value={this.state.age} onChange={this.updateAge.bind(this)} /></div>
+                    </li>
+                );
+            }
         }
 
-        /*function Add(props) {
-            return (
-                props.listG
-            );
-        }*/
-
         class Questionnaire extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = { total: 20 }
+            }
 
             render() {
                 const oui = "Monseigneur";
                 const non = "Oui";
-                var list = [{ nom: 'Robert', age: 46, background: 'pink' },
-                { nom: 'Michael', age: 39, background: 'cyan' },
-                { nom: 'Jose', age: 22, background: 'gray' }];
+
+                //var sumAge = list.map(p => p.age).reduce((acc, age) => acc + age);
+
                 return (
                     <div>
                         <div>je suis là</div>
                         <h5>je peux concaténer {oui + non}</h5>
                         <ul>
-                            {list.map((person) => (
+                            {list.map((person,index) => (
                                 <Identite
+                                    key={index}
                                     name={person.nom}
                                     age={person.age}
                                     bg={person.background} />
                             ))}
                         </ul>
+                    {/*<h4>Total : {sumAge}</h4>*/}
                         <button id="add" on>+</button>
                     </div>);
             }
