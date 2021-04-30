@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>test reactjs</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+
+    <!-- Transpileur/Compilateur : transforme et renvoie du code js en un format différent (syntaxe ES6)-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Charge le composant React -->
+    <script type="text/babel">
+        function moncul(){
+            return <h1>du poulet</h1>;
+        }
+
+    </script>
+    <button onclick="moncul()">TAPE MOI</button>
+</body>
+
+</html>
