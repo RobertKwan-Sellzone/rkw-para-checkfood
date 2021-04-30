@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Questionnaire</title>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- Charge React-->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+
+    <!-- Transpileur/Compilateur : transforme et renvoie du code js en un format différent (syntaxe ES6)-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Charge le composant React -->
+    <script type="text/babel">
+        function Identite(props) {
+            return (
+                <li style={{ backgroundColor: props.bg }}>
+                    <div>{props.name + " âgé de "}
+                        <input type="number" value={props.age} /></div>
+                </li>
+            );
+        }
+
+        /*function Add(props) {
+            return (
+                props.listG
+            );
+        }*/
+
+        class Questionnaire extends React.Component {
+
+            render() {
+                const oui = "Monseigneur";
+                const non = "Oui";
+                var list = [{ nom: 'Robert', age: 46, background: 'pink' },
+                { nom: 'Michael', age: 39, background: 'cyan' },
+                { nom: 'Jose', age: 22, background: 'gray' }];
+                return (
+                    <div>
+                        <div>je suis là</div>
+                        <h5>je peux concaténer {oui + non}</h5>
+                        <ul>
+                            {list.map((person) => (
+                                <Identite
+                                    name={person.nom}
+                                    age={person.age}
+                                    bg={person.background} />
+                            ))}
+                        </ul>
+                        <button id="add" on>+</button>
+                    </div>);
+            }
+        }
+
+        ReactDOM.render(
+            <Questionnaire />,
+            document.getElementById('root')
+        );
+    </script>
+
+</body>
+
+</html>
