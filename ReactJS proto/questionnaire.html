@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Questionnaire</title>
-</head>
-
-<body>
-    <div id="root"></div>
 
     <!-- Charge React-->
     <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
 
-    <!-- Transpileur/Compilateur : transforme et renvoie du code js en un format différent (syntaxe ES6)-->
+    <!-- Transpileur/Compilateur : permet la syntaxe JSX -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+
 
     <!-- Charge le composant React -->
     <script type="text/babel">
@@ -23,60 +25,89 @@
         { nom: 'Michael', age: 39, background: 'cyan' },
         { nom: 'Jose', age: 22, background: 'gray' }];
 
-        var listAge = list.map(ages => ages.age);
-
         class Identite extends React.Component {
 
             constructor(props) {
                 super(props);
-                this.state = { age: listAge }
+                this.state = {
+                    value: '',
+                    list: list,
+                    name: '',
+                };
             }
 
-            updateAge(event) {
-                this.setState({ age: event.target.value });
+            /*updateAge(event) {
+                this.setState({ value: event.target.value });
+            };*/
+
+            updateName(event) {
+                this.setState({ name: event.target.value });
             }
+
+
+            addPerson() {
+                this.setState(state => {
+                    const list = state.list.concat(state.value);
+                    
+
+                    return {
+                        list,
+                        value: '',
+                    };
+                });
+            };
 
             render() {
+
                 return (
-                    <li style={{ backgroundColor: this.props.bg }}>
-                        <div>{this.props.name + " âgé de "}
-                            <input type="number" value={this.state.age} onChange={this.updateAge.bind(this)} /></div>
-                    </li>
+                    <div>
+                        <ul>
+                            {this.state.list.map((person, index) => (
+                                <li key="index" style={{ backgroundColor: person.background }}>
+                                    <div>
+                                        <input type="text" value={person.nom} onChange={this.updateName.bind(this)} />
+                                        âgé de
+                                        <input
+                                            type="number"
+                                            value={person.age}
+                                        //onChange={this.updateAge.bind(this)}
+                                        />
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        <button
+                            id="add"
+                            type="button"
+                            onClick={this.addPerson.bind(this) || console.log(JSON.stringify({person}))}
+                        >+</button>
+                    </div>
                 );
             }
         }
 
         class Questionnaire extends React.Component {
 
-            constructor(props) {
+            /*constructor(props) {
                 super(props);
-                this.state = { total: 20 }
-            }
+                this.state = { ages: listAge }
+            }*/
 
             render() {
-                const oui = "Monseigneur";
-                const non = "Oui";
 
                 //var sumAge = list.map(p => p.age).reduce((acc, age) => acc + age);
 
                 return (
                     <div>
-                        <div>je suis là</div>
-                        <h5>je peux concaténer {oui + non}</h5>
-                        <ul>
-                            {list.map((person,index) => (
-                                <Identite
-                                    key={index}
-                                    name={person.nom}
-                                    age={person.age}
-                                    bg={person.background} />
-                            ))}
-                        </ul>
-                    {/*<h4>Total : {sumAge}</h4>*/}
-                        <button id="add" on>+</button>
-                    </div>);
+                    <Identite />
+                    
+                    </div>
+                    
+                    //<h4>Total : {sumAge}</h4>
+                );
             }
         }
+
 
         ReactDOM.render(
             <Questionnaire />,
