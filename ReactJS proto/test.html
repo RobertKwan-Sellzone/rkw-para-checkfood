@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <!-- Charge React-->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+    <!-- Material-ui -->
+    <script src="https://unpkg.com/@material-ui/core@4.11.4/umd/material-ui.production.min.js"></script>
+
+    <!-- Transpileur/Compilateur : permet la syntaxe JSX -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <script type="text/babel">
+
+        const question = [
+            {
+                type: 'temp',
+                label: 'Chambre froide',
+                maxR: '-15',
+                maxO: '-17'
+            },
+            {
+                type: 'temp',
+                label: 'Armoire 1',
+                maxR: '-15',
+                maxO: '-17'
+            },
+            {
+                type: 'check',
+                label: 'DLC primaire',
+                ok: 'green',
+                nok: 'orange',
+                none: 'lightgray'
+            },
+            {
+                type: 'teneur',
+                label: 'Relevé de composé',
+                maxR: '22',
+                maxO: '20'
+            },
+        ];
+
+        const {
+            FormControl,
+            RadioGroup,
+            FormControlLabel,
+            FormLabel,
+            Radio,
+            TextField,
+            Typography,
+            InputAdornment,
+            ListItem,
+        } = MaterialUI;
+
+        class RadioButtonGroup extends React.Component {
+
+            constructor(props) {
+                super(props);
+                this.state = {
+                    value: 'ok',
+                };
+            }
+
+            handleChange(event) {
+                this.setState({ value: event.target.value });
+            }
+
+            render() {
+
+                let field;
+
+                switch (this.props.type) {
+                    case 'check':
+                        field = (
+                            <RadioGroup row aria-label="checklist" name="checklist" value={this.value} onChange={this.handleChange.bind(this)}>
+                                <FormControlLabel value="ok" control={<Radio />} label="Ok" />
+                                <FormControlLabel value="ko" control={<Radio />} label="Pas ok" />
+                                <FormControlLabel value="none" control={<Radio />} label="Pas fait" />
+                            </RadioGroup>);
+                        break;
+                    case 'temp':
+                        field = (
+                            <TextField
+                                id="temp"
+                                type="number"
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position='end'>
+                                            °C
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                variant="outlined"
+                            />
+                        );
+                        break;
+                    case 'teneur':
+                        field = (
+                            <TextField id="ten" type="tel"
+                                InputProps={{
+                                    endAdornment: (<InputAdornment position='end'>%</InputAdornment>),
+                                }}
+                                variant="outlined"
+                            />
+                        );
+                        break;
+                    default:
+                        field = "nothing";
+                        break;
+                }
+
+                return (
+                    <ListItem>
+                        <FormControl component="fieldset" >
+                            <FormLabel component="h2">{this.props.label}</FormLabel>
+                            {field}
+                        </FormControl >
+                    </ListItem>
+                );
+            };
+        }
+
+        function App() {
+            return (
+                <div>
+                    {question.map((q) => (
+                        <RadioButtonGroup
+                            type={q.type}
+                            label={q.label}
+                        />
+                    ))}
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+    </script>
+
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+</html>

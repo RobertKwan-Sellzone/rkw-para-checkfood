@@ -16,13 +16,13 @@
 
    <script type="text/babel">
 		var maListe = [
-			{temp : "Huile de friture", temp_max : 10},
+			{temp : "Huile de friture", check:"je suis un check", temp_max : 10},
 			{check : "C'est grave doc ?", warn_nok : "red"} //pas de virgule admise ici !!!
 		];	
 
 		/* j'ai la flemme de passer mes données avec props,
 		mais comme c'est immutable, une variable globale fait l'affaire ici. */
-		var this_is_a_props = maListe[1]; // <=============================== C'EST LA QU'ON CHANGE ======================
+		var this_is_a_props = maListe[0]; // <=============================== C'EST LA QU'ON CHANGE ======================
 	
 		class SwitchMeganeStyle extends React.Component {
 			render(){
@@ -34,7 +34,7 @@
 						<div>Devant</div>
 						{isTemp && 
 							<h1>je suis une température</h1>}
-						{/* RIEN NE DOIT SE METTRE ENTRE EUX.... car ils s'aaaaaaaaaaiment */}
+						/* RIEN NE DOIT SE METTRE ENTRE EUX.... car ils s'aaaaaaaaaaiment */
 						{isCheck && 
 							<h1>je suis un groupe de radio</h1>}
 						<div>Derrière</div>
