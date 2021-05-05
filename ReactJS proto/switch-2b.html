@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>évolution d'un Switch - step 2 bis</title>
+	
+
+    <!-- ReactJS -->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+    <!-- support JSX pour ReactJS -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+
+   <script type="text/babel">
+		var maListe = [
+			{type: "temp", label : "Huile de friture", temp_max : 10},
+			{type: "check", label: "C'est grave doc ?", warn_nok : "red"} //pas de virgule admise ici !!!
+		];	
+
+		/* j'ai la flemme de passer mes données avec props,
+		mais comme c'est immutable, une variable globale fait l'affaire ici. */
+		var this_is_a_props = maListe[1]; // <=============================== C'EST LA QU'ON CHANGE ======================
+	
+		class SwitchAvecSwitch extends React.Component {
+			render(){
+				let field;
+				switch (this_is_a_props.type) {
+					case "temp":
+						field= <h1>je suis une température</h1>;
+						break;
+					case "check":
+						field =<h1>je suis un groupe de radio</h1>;
+						break;
+					default:
+						field= "unsupported";
+						break;
+				}
+				
+				return (
+					<div style={{border: "5px bevel blue"}} >
+						<div>Devant</div>
+						{field}
+						<div>Derrière</div>
+					</div>
+				);
+			}
+		}
+		
+		ReactDOM.render(
+            <SwitchAvecSwitch />,
+            document.getElementById('root')
+        );
+    </script>	
+</head>
+
+<body id="root">
+
+</body>
+
+</html>
