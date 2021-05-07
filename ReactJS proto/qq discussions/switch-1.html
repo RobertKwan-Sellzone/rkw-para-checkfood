@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>évolution d'un Switch - step 1</title>
+	
+
+    <!-- ReactJS -->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+    <!-- support JSX pour ReactJS -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+
+   <script type="text/babel">
+		var maListe = [
+			{temp : "Huile de friture", temp_max : 10},
+			{check : "C'est grave doc ?", warn_nok : "red"} //pas de virgule admise ici !!!
+		];	
+
+		/* j'ai la flemme de passer mes données avec props,
+		mais comme c'est immutable, une variable globale fait l'affaire ici. */
+		var this_is_a_props = maListe[1]; // <=============================== C'EST LA QU'ON CHANGE ======================
+	
+		class SwitchMeganeStyle extends React.Component {
+			render(){
+				const isTemp = this_is_a_props.temp;
+				const isCheck = this_is_a_props.check;
+				
+				return (
+					<div style={{border: "5px bevel blue"}} >
+						<div>Devant</div>
+						{isTemp && 
+							<h1>je suis une température</h1>}
+						{/* RIEN NE DOIT SE METTRE ENTRE EUX.... car ils s'aaaaaaaaaaiment */}
+						{isCheck && 
+							<h1>je suis un groupe de radio</h1>}
+						<div>Derrière</div>
+					</div>
+				);
+			}
+		}
+		
+		ReactDOM.render(
+            <SwitchMeganeStyle />,
+            document.getElementById('root')
+        );
+    </script>	
+</head>
+
+<body id="root">
+
+</body>
+
+</html>
