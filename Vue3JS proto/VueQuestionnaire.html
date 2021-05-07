@@ -11,20 +11,42 @@
 
 <body>
     <div id="app">
-        <p v-bind:title="message" v-for="todo in todos">
+        <h1>Potato Worl</h1>
+        <input type="text" v-model="message" />
+        <a href="#" @click="ajouterNote" v-if="message != '' ">Ajouter</a>
+        <p v-bind:title="message" v-for="todo in todos" :key="todo.id" @click="inverser">
             {{ todo }}
         </p>
+
+        <note v-for="todo in todos" v-bind:content="todo"></note>
+
     </div>
 
     <script>
         const patate = Vue.createApp({
             data() {
                 return {
-                    message: 'Hello jose <3',
-                    todos: ['Chris', 'Jose', 'Bol'],
+                    message: 'Hello to my potato friends',
+                    todos: ['Chris', 'Jose', 'Bol']
+                }
+            },
+            methods: {
+                inverser() {
+                    this.todos.reverse();
+                },
+                ajouterNote() {
+                    this.todos.push(this.message);
+                    this.message = '';
                 }
             }
-        }).mount('#app')
+        })
+
+        patate.component('note', {
+            props: ['content'],
+            template: `<p> {{ content }} </p>`
+        })
+
+        patate.mount('#app');
 
 
     </script>
