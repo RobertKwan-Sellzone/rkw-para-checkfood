@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire ver. Vue 3 JS</title>
+
+    <script src="https://unpkg.com/vue@next"></script>
+
+<body>
+    <div id="app">
+        <p v-bind:title="message" v-for="todo in todos">
+            {{ todo }}
+        </p>
+    </div>
+
+    <script>
+        const patate = Vue.createApp({
+            data() {
+                return {
+                    message: 'Hello jose <3',
+                    todos: ['Chris', 'Jose', 'Bol'],
+                }
+            }
+        }).mount('#app')
+
+
+    </script>
+</body>
+
+</html>

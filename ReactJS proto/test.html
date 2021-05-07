@@ -55,9 +55,10 @@
             Typography,
             InputAdornment,
             ListItem,
+            FormGroup,
         } = MaterialUI;
 
-        class RadioButtonGroup extends React.Component {
+        class ItemGroup extends React.Component {
 
             constructor(props) {
                 super(props);
@@ -103,7 +104,8 @@
                         field = (
                             <TextField id="ten" type="tel"
                                 InputProps={{
-                                    endAdornment: (<InputAdornment position='end'>%</InputAdornment>),
+                                    endAdornment: (
+                                        <InputAdornment position='end'>%</InputAdornment>),
                                 }}
                                 variant="outlined"
                             />
@@ -115,25 +117,28 @@
                 }
 
                 return (
-                    <ListItem>
-                        <FormControl component="fieldset" >
-                            <FormLabel component="h2">{this.props.label}</FormLabel>
-                            {field}
-                        </FormControl >
-                    </ListItem>
+                    <div>
+                        <FormLabel component="h2">{this.props.label}</FormLabel>
+                        {field}
+                    </div>
                 );
             };
         }
 
         function App() {
             return (
-                <div>
-                    {question.map((q) => (
-                        <RadioButtonGroup
-                            type={q.type}
-                            label={q.label}
-                        />
-                    ))}
+                <div id="oui">
+                    <FormControl>
+                        <FormGroup>
+                            {question.map((q) => (
+                                <ItemGroup
+                                    type={q.type}
+                                    label={q.label}
+                                />
+                            ))}
+                        </FormGroup>
+                    </FormControl>
+                    {/*console.log(FormControl)*/}
                 </div>
             );
         }

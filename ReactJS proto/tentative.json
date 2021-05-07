@@ -1,0 +1,30 @@
+{
+    "id": "",
+    "role": "",
+    "sale point": "",
+    "categories": [
+        {
+            "category": "",
+            "date and hours": "",
+            "types": [
+                {
+                    "type": "",
+                    "label": "",
+                    "commentaires/actions correctives": "",
+                    "pictures": [
+                        {
+                            "img": "",
+                            "legend": ""
+                        }
+                    ],
+                    "valeur initiale": "",
+                    "seuil orange": "",
+                    "seuil max_orange": "",
+                    "seuil min_rouge": "",
+                    "seuil max_rouge": ""
+                }
+            ]
+        }
+    ],
+    "": ""
+}
