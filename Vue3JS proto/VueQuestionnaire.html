@@ -1,54 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@next"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+        crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
     <title>Questionnaire ver. Vue 3 JS</title>
 
-    <script src="https://unpkg.com/vue@next"></script>
+</head>
 
 <body>
-    <div id="app">
-        <h1>Potato Worl</h1>
-        <input type="text" v-model="message" />
-        <a href="#" @click="ajouterNote" v-if="message != '' ">Ajouter</a>
-        <p v-bind:title="message" v-for="todo in todos" :key="todo.id" @click="inverser">
-            {{ todo }}
-        </p>
+    <div id="app" class="row justify-content-center" style="padding: 16px;">
+        <div class="col-lg-4">
+            <h1>Hello Bol</h1>
 
-        <note v-for="todo in todos" v-bind:content="todo"></note>
+            <div v-for="question in questions" :key="question.id">
+                <div v-if="question.type === 'check' ">
+                    <item-group-check :label-check="question.label"></item-group-check>
+                </div>
+                <div v-else-if="question.type === 'temp' ">
+                    <item-group-temperature></item-group-temperature>
+                </div>
+                <div v-if="question.type === 'teneur' ">
+                    <item-group-content-level></item-group-content-level>
+                </div>
+                <hr>
+            </div>
 
+
+        </div>
     </div>
 
     <script>
-        const patate = Vue.createApp({
+    
+
+        const questionnaire = Vue.createApp({
             data() {
                 return {
-                    message: 'Hello to my potato friends',
-                    todos: ['Chris', 'Jose', 'Bol']
-                }
-            },
-            methods: {
-                inverser() {
-                    this.todos.reverse();
-                },
-                ajouterNote() {
-                    this.todos.push(this.message);
-                    this.message = '';
+                    questions,
                 }
             }
-        })
+        });
 
-        patate.component('note', {
-            props: ['content'],
-            template: `<p> {{ content }} </p>`
-        })
+        const ItemGroupCheck = {
+            props: ['labelCheck'],
+            data() {
+                return {
+                    designs: [
+                        { id: Math.ceil(Math.random() * 1000000), name: "Oui", color: "btn-outline-success" },
+                        { id: Math.ceil(Math.random() * 1000000), name: "Non", color: "btn-outline-danger" },
+                        { id: Math.ceil(Math.random() * 1000000), name: "Non évalué", color: "btn-outline-secondary" }
+                    ],
+                    selectedDesign: null,
+                };
+            },
+            template: `
+                    <div class="mb-3">
+                        <blockquote class="blockquote">
+                            <p> {{ labelCheck }} </p>
+                        </blockquote>
+                        <div class="row justify-content-md-center">
+                            <div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
+                                <input v-bind="$attrs" class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
+                                <label class="btn" v-bind:for="design.id" v-bind:class="design.color">{{design.name}}</label>
+                            </div>
+                        </div>                   
+                       <span>Choisi : {{selectedDesign}}</span>
+                    </div>
+            `
+        };
 
-        patate.mount('#app');
+        const ItemGroupContentLevel = {
+            template: `
+                <p> Question </p>
+                <div class="input-group">
+                    <input class="form-control-sm" type="number" id="content-level" step="0.1">
+                    <div class="input-group-append">
+                        <span class="input-group-text"> % </span>
+                    </div>
+                </div>
+            `
+        };
 
+        const ItemGroupTemperature = {
+            template: `
+                <p> Question </p>
+                <div class="input-group">
+                    <input class="form-control-sm" type="number" id="temperature" step="0.1">
+                    <div class="input-group-append">
+                    <span class="input-group-text"> °C </span>
+                    </div>
+                </div>
+            `
+        };
 
+        const questions = [
+            {
+                type: 'temp',
+                label: 'Chambre froide',
+                maxR: '-15',
+                maxO: '-17',
+                id: 'tmp1'
+            },
+            {
+                type: 'temp',
+                label: 'Armoire 1',
+                maxR: '-15',
+                maxO: '-17',
+                id: 'tmp2'
+            },
+            {
+                type: 'check',
+                label: 'DLC primaire',
+                ok: 'green',
+                nok: 'orange',
+                none: 'lightgray',
+                id: 'chk1'
+            },
+            {
+                type: 'check',
+                label: 'DLC primaire',
+                ok: 'green',
+                nok: 'orange',
+                none: 'lightgray',
+                id: 'chk2'
+            },
+            {
+                type: 'teneur',
+                label: 'Relevé de composé',
+                maxR: '22',
+                maxO: '20',
+                id: 'ten1'
+            },
+        ];
+
+        questionnaire.component("item-group-check", ItemGroupCheck);
+        questionnaire.component("item-group-content-level", ItemGroupContentLevel);
+        questionnaire.component("item-group-temperature", ItemGroupTemperature)
+        questionnaire.mount('#app');
     </script>
 </body>
 
