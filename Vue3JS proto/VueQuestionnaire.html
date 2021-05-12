@@ -24,7 +24,7 @@
                     <p> {{ question.label }} </p>
                 </blockquote>
                 <div v-if="question.type === 'check' ">
-                    <item-group-check :label-check="question.label"></item-group-check>
+                    <item-group-check></item-group-check>
                 </div>
                 <div v-else-if="question.type === 'temp' ">
                     <item-group-temperature></item-group-temperature>
@@ -36,7 +36,6 @@
 
             </div>
             <div>
-
                 <add-item @add-new-item="addNewItem"></add-item>
                 <!--  <select class="form-control">
                     <option v-for="option in options" :key="option.id" :value="option.value">{{ option.value }}</option>
@@ -70,18 +69,12 @@
             data() {
                 return {
                     questions,
-                    options: [
-                        { id: "", value: "-- Choisissez le type --" },
-                        { id: "check", value: "Check" },
-                        { id: "teneur", value: "Teneur %" },
-                        { id: "temp", value: "Température °C" }
-                    ]
                 }
             },
             methods: {
-                addNewItem(newItem) {
+                addNewItem(newItem, selected) {
                     this.questions.push({
-                        type: "temp",
+                        type: selected,
                         label: newItem
                     })
                 }
@@ -92,25 +85,35 @@
             emits: ['add-new-item'],
             data() {
                 return {
-                    newItem: ''
+                    newItem: '',
+                    options: [
+                        { id: "", value: "-- Choisissez le type --" },
+                        { id: "check", value: "Check" },
+                        { id: "teneur", value: "Teneur %" },
+                        { id: "temp", value: "Température °C" }
+                    ],
+                    selected: '',
                 }
             },
             methods: {
                 loadItem() {
-                    this.$emit('add-new-item', this.newItem);
+                    this.$emit('add-new-item', this.newItem, this.selected);
                     this.newItem = '';
+                    this.selected= '';
                 }
             },
             template: `
-                <label for="new-item">Ajouter une tâche</label>
-                <input class="form-control" v-model="newItem" id="new-item"
+                <select class="form-control" v-model="selected">
+                    <option v-for="option in options" :key="option.id" :value="option.id">{{ option.value }}</option>
+                </select>
+                <label>Ajouter une tâche</label>
+                <input class="form-control" v-model="newItem"
                     placeholder="Exemple: Huile de cuisson">
-                <button class="btn btn-primary" @click="loadItem">Ajouter</button>
+                <button class="btn btn-primary" @click="loadItem" style="float: right; margin: 8px;">Ajouter</button>
             `
         };
 
         const ItemGroupCheck = {
-            props: ['labelCheck'],
             data() {
                 return {
                     designs: [
@@ -125,7 +128,7 @@
                     <div class="mb-3">
                         <div class="row justify-content-md-center">
                             <div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
-                                <input v-bind="$attrs" class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
+                                <input class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
                                 <label class="btn" v-bind:for="design.id" v-bind:class="design.color">{{design.name}}</label>
                             </div>
                         </div>                   
