@@ -35,11 +35,20 @@
                 <hr>
 
             </div>
-            <form v-on:submit.prevent="addNewItem('check')">
-                <label for="new-item-check">Ajouter une tâche</label>
-                <input v-model="newItem" id="new-item-check" placeholder="Exemple: Huile de cuisson">
-                <button>Ajouter</button>
-            </form>
+            <div>
+
+                <add-item @add-new-item="addNewItem"></add-item>
+                <!--  <select class="form-control">
+                    <option v-for="option in options" :key="option.id" :value="option.value">{{ option.value }}</option>
+                </select>
+                <form v-on:submit.prevent="addNewItem('check')" class="form-inline">
+                    
+                   <label for="new-item">Ajouter une tâche</label>
+                    <input class="form-control" v-model="newItem" id="new-item"
+                        placeholder="Exemple: Huile de cuisson">
+                    <button class="btn btn-primary">Ajouter</button>-->
+                </form>
+            </div>
             <!--<form v-on:submit.prevent="addNewItem('teneur')">
                 <label for="new-item-teneur">Ajouter une tâche</label>
                 <input v-model="newItem" id="new-item-teneur" placeholder="Exemple: Huile de cuisson">
@@ -61,19 +70,44 @@
             data() {
                 return {
                     questions,
+                    options: [
+                        { id: "", value: "-- Choisissez le type --" },
+                        { id: "check", value: "Check" },
+                        { id: "teneur", value: "Teneur %" },
+                        { id: "temp", value: "Température °C" }
+                    ]
+                }
+            },
+            methods: {
+                addNewItem(newItem) {
+                    this.questions.push({
+                        type: "temp",
+                        label: newItem
+                    })
+                }
+            }
+        });
+
+        const AddItem = {
+            emits: ['add-new-item'],
+            data() {
+                return {
                     newItem: ''
                 }
             },
             methods: {
-                addNewItem(itemType) {
-                    this.questions.push({
-                        type: itemType,
-                        label: this.newItem
-                    })
-                    this.newItem = ''
+                loadItem() {
+                    this.$emit('add-new-item', this.newItem);
+                    this.newItem = '';
                 }
-            }
-        });
+            },
+            template: `
+                <label for="new-item">Ajouter une tâche</label>
+                <input class="form-control" v-model="newItem" id="new-item"
+                    placeholder="Exemple: Huile de cuisson">
+                <button class="btn btn-primary" @click="loadItem">Ajouter</button>
+            `
+        };
 
         const ItemGroupCheck = {
             props: ['labelCheck'],
@@ -179,7 +213,8 @@
 
         questionnaire.component("item-group-check", ItemGroupCheck);
         questionnaire.component("item-group-content-level", ItemGroupContentLevel);
-        questionnaire.component("item-group-temperature", ItemGroupTemperature)
+        questionnaire.component("item-group-temperature", ItemGroupTemperature);
+        questionnaire.component("add-item", AddItem)
         questionnaire.mount('#app');
     </script>
 </body>
