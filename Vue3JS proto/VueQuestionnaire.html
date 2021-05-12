@@ -19,7 +19,7 @@
         <div class="col-lg-4">
             <h1>Hello Bol</h1>
 
-            <div v-for="question in questions" :key="question.id">
+            <div v-for="question in questions" :key="question.label">
                 <blockquote class="blockquote">
                     <p> {{ question.label }} </p>
                 </blockquote>
@@ -165,52 +165,36 @@
                 label: 'Chambre froide',
                 maxR: '-15',
                 maxO: '-17',
-                id: 'tmp1'
             },
             {
                 type: 'temp',
                 label: 'Armoire 1',
                 maxR: '-15',
                 maxO: '-17',
-                id: 'tmp2'
             },
             {
                 type: 'check',
                 label: 'DLC primaire',
-                ok: 'green',
-                nok: 'orange',
-                none: 'lightgray',
-                id: 'chk1'
             },
             {
                 type: 'teneur',
                 label: 'Relevé de composé',
                 maxR: '22',
                 maxO: '20',
-                id: 'ten1'
             },
             {
                 type: 'check',
                 label: 'DLC secondaire',
-                ok: 'green',
-                nok: 'orange',
-                none: 'lightgray',
-                id: 'chk2'
             },
             {
                 type: 'temp',
                 label: 'Armoire 1',
                 maxR: '-15',
                 maxO: '-17',
-                id: 'tmp3'
             },
             {
                 type: 'check',
                 label: 'Produits protégés et filmés	',
-                ok: 'green',
-                nok: 'orange',
-                none: 'lightgray',
-                id: 'chk2'
             },
         ];
 
