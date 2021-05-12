@@ -20,6 +20,9 @@
             <h1>Hello Bol</h1>
 
             <div v-for="question in questions" :key="question.id">
+                <blockquote class="blockquote">
+                    <p> {{ question.label }} </p>
+                </blockquote>
                 <div v-if="question.type === 'check' ">
                     <item-group-check :label-check="question.label"></item-group-check>
                 </div>
@@ -30,19 +33,44 @@
                     <item-group-content-level></item-group-content-level>
                 </div>
                 <hr>
-            </div>
 
+            </div>
+            <form v-on:submit.prevent="addNewItem('check')">
+                <label for="new-item-check">Ajouter une tâche</label>
+                <input v-model="newItem" id="new-item-check" placeholder="Exemple: Huile de cuisson">
+                <button>Ajouter</button>
+            </form>
+            <!--<form v-on:submit.prevent="addNewItem('teneur')">
+                <label for="new-item-teneur">Ajouter une tâche</label>
+                <input v-model="newItem" id="new-item-teneur" placeholder="Exemple: Huile de cuisson">
+                <button>Ajouter</button>
+            </form>
+            <form v-on:submit.prevent="addNewItem('temp')">
+                <label for="new-item-temp">Ajouter une tâche</label>
+                <input v-model="newItem" id="new-item-temp" placeholder="Exemple: Huile de cuisson">
+                <button>Ajouter</button>
+            </form>-->
 
         </div>
     </div>
 
     <script>
-    
+
 
         const questionnaire = Vue.createApp({
             data() {
                 return {
                     questions,
+                    newItem: ''
+                }
+            },
+            methods: {
+                addNewItem(itemType) {
+                    this.questions.push({
+                        type: itemType,
+                        label: this.newItem
+                    })
+                    this.newItem = ''
                 }
             }
         });
@@ -61,9 +89,6 @@
             },
             template: `
                     <div class="mb-3">
-                        <blockquote class="blockquote">
-                            <p> {{ labelCheck }} </p>
-                        </blockquote>
                         <div class="row justify-content-md-center">
                             <div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
                                 <input v-bind="$attrs" class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
@@ -77,7 +102,6 @@
 
         const ItemGroupContentLevel = {
             template: `
-                <p> Question </p>
                 <div class="input-group">
                     <input class="form-control-sm" type="number" id="content-level" step="0.1">
                     <div class="input-group-append">
@@ -89,7 +113,6 @@
 
         const ItemGroupTemperature = {
             template: `
-                <p> Question </p>
                 <div class="input-group">
                     <input class="form-control-sm" type="number" id="temperature" step="0.1">
                     <div class="input-group-append">
@@ -123,19 +146,34 @@
                 id: 'chk1'
             },
             {
+                type: 'teneur',
+                label: 'Relevé de composé',
+                maxR: '22',
+                maxO: '20',
+                id: 'ten1'
+            },
+            {
                 type: 'check',
-                label: 'DLC primaire',
+                label: 'DLC secondaire',
                 ok: 'green',
                 nok: 'orange',
                 none: 'lightgray',
                 id: 'chk2'
             },
             {
-                type: 'teneur',
-                label: 'Relevé de composé',
-                maxR: '22',
-                maxO: '20',
-                id: 'ten1'
+                type: 'temp',
+                label: 'Armoire 1',
+                maxR: '-15',
+                maxO: '-17',
+                id: 'tmp3'
+            },
+            {
+                type: 'check',
+                label: 'Produits protégés et filmés	',
+                ok: 'green',
+                nok: 'orange',
+                none: 'lightgray',
+                id: 'chk2'
             },
         ];
 
