@@ -35,18 +35,7 @@
                     <input-group-content-level></input-group-content-level>
                 </div>
                 <hr>
-
             </div>
-
-            <!--<div>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseAddItem" aria-expanded="false" aria-controls="collapseAddItem"
-                    style="margin-top: 5px; margin-bottom: 15px;">
-                    +</button>
-                 <div class="collapse" id="collapseAddItem">
-                    <add-item @add-new-item="addNewItem"></add-item>
-                </div> 
-            </div>-->
         </div>
     </div>
 
@@ -60,63 +49,7 @@
                     responses: [],
                 }
             },
-            computed: {
-                /*changeColor(element) {
-
-                    if (element.default_value >= element.maxR || element.default_value <= element.minR) {
-                        return 'red';
-                    }
-                    else if (element.default_value >= element.maxO || element.default_value <= element.minO) {
-                        return 'warning';
-                    }
-                    else if (element.default_value == element.default_value) {
-                        return 'initial';
-                    }
-                }*/
-            },
-            methods: {
-                /* addNewItem(newItem, selected) {
-                     this.questions.push({
-                         type: selected,
-                         label: newItem
-                     })
-                 },*/
-
-            }
-
         });
-
-        /*const AddItem = {
-            emits: ['add-new-item'],
-            data() {
-                return {
-                    newItem: '',
-                    options: [
-                        { id: "", value: "-- Choisissez le type --" },
-                        { id: "check", value: "Check" },
-                        { id: "teneur", value: "Teneur %" },
-                        { id: "temp", value: "Température °C" }
-                    ],
-                    selected: '',
-                }
-            },
-            methods: {
-                loadItem() {
-                    this.$emit('add-new-item', this.newItem, this.selected);
-                    this.newItem = '';
-                    this.selected = '';
-                },
-            },
-            template: `
-                    <select class="form-control" v-model="selected">
-                        <option v-for="option in options" :key="option.id" :value="option.id">{{ option.value }}</option>
-                    </select>
-                    <label>Ajouter une tâche</label>
-                    <input class="form-control" v-model="newItem"
-                        placeholder="Exemple: Huile de cuisson">
-                    <button class="btn btn-primary" @click="loadItem" style="float: right; margin: 8px;">Ajouter</button>
-            `
-        };*/
 
         const InputGroupCheck = {
             props: ['increment'],
