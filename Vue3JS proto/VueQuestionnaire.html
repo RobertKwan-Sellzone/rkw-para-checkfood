@@ -17,48 +17,36 @@
 <body>
     <div id="app" class="row justify-content-center" style="padding: 16px;">
         <div class="col-lg-4">
-            <h1>Hello Bol</h1>
 
-            <div v-for="question in questions" :key="question.label">
+            <div v-for="(question, index) in questions" :key="question.label">
                 <blockquote class="blockquote">
                     <p> {{ question.label }} </p>
                 </blockquote>
                 <div v-if="question.type === 'check' ">
-                    <item-group-check></item-group-check>
+                    <input-group-check :increment="index"></input-group-check>
                 </div>
                 <div v-else-if="question.type === 'temp' ">
-                    <item-group-temperature></item-group-temperature>
+                    <input-group-temperature v-model:initial="question.default_value" :idtemperature="index"
+                        :maxrouge="question.maxR" :minrouge="question.minR" :maxorange="question.maxO"
+                        :minorange="question.minO">
+                    </input-group-temperature> lov : {{question.default_value}}
                 </div>
-                <div v-if="question.type === 'teneur' ">
-                    <item-group-content-level></item-group-content-level>
+                <div v-else-if="question.type === 'teneur' ">
+                    <input-group-content-level></input-group-content-level>
                 </div>
                 <hr>
 
             </div>
-            <div>
-                <add-item @add-new-item="addNewItem"></add-item>
-                <!--  <select class="form-control">
-                    <option v-for="option in options" :key="option.id" :value="option.value">{{ option.value }}</option>
-                </select>
-                <form v-on:submit.prevent="addNewItem('check')" class="form-inline">
-                    
-                   <label for="new-item">Ajouter une tâche</label>
-                    <input class="form-control" v-model="newItem" id="new-item"
-                        placeholder="Exemple: Huile de cuisson">
-                    <button class="btn btn-primary">Ajouter</button>-->
-                </form>
-            </div>
-            <!--<form v-on:submit.prevent="addNewItem('teneur')">
-                <label for="new-item-teneur">Ajouter une tâche</label>
-                <input v-model="newItem" id="new-item-teneur" placeholder="Exemple: Huile de cuisson">
-                <button>Ajouter</button>
-            </form>
-            <form v-on:submit.prevent="addNewItem('temp')">
-                <label for="new-item-temp">Ajouter une tâche</label>
-                <input v-model="newItem" id="new-item-temp" placeholder="Exemple: Huile de cuisson">
-                <button>Ajouter</button>
-            </form>-->
 
+            <!--<div>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseAddItem" aria-expanded="false" aria-controls="collapseAddItem"
+                    style="margin-top: 5px; margin-bottom: 15px;">
+                    +</button>
+                 <div class="collapse" id="collapseAddItem">
+                    <add-item @add-new-item="addNewItem"></add-item>
+                </div> 
+            </div>-->
         </div>
     </div>
 
@@ -69,19 +57,36 @@
             data() {
                 return {
                     questions,
+                    responses: [],
                 }
             },
+            computed: {
+                /*changeColor(element) {
+
+                    if (element.default_value >= element.maxR || element.default_value <= element.minR) {
+                        return 'red';
+                    }
+                    else if (element.default_value >= element.maxO || element.default_value <= element.minO) {
+                        return 'warning';
+                    }
+                    else if (element.default_value == element.default_value) {
+                        return 'initial';
+                    }
+                }*/
+            },
             methods: {
-                addNewItem(newItem, selected) {
-                    this.questions.push({
-                        type: selected,
-                        label: newItem
-                    })
-                }
+                /* addNewItem(newItem, selected) {
+                     this.questions.push({
+                         type: selected,
+                         label: newItem
+                     })
+                 },*/
+
             }
+
         });
 
-        const AddItem = {
+        /*const AddItem = {
             emits: ['add-new-item'],
             data() {
                 return {
@@ -99,27 +104,28 @@
                 loadItem() {
                     this.$emit('add-new-item', this.newItem, this.selected);
                     this.newItem = '';
-                    this.selected= '';
-                }
+                    this.selected = '';
+                },
             },
             template: `
-                <select class="form-control" v-model="selected">
-                    <option v-for="option in options" :key="option.id" :value="option.id">{{ option.value }}</option>
-                </select>
-                <label>Ajouter une tâche</label>
-                <input class="form-control" v-model="newItem"
-                    placeholder="Exemple: Huile de cuisson">
-                <button class="btn btn-primary" @click="loadItem" style="float: right; margin: 8px;">Ajouter</button>
+                    <select class="form-control" v-model="selected">
+                        <option v-for="option in options" :key="option.id" :value="option.id">{{ option.value }}</option>
+                    </select>
+                    <label>Ajouter une tâche</label>
+                    <input class="form-control" v-model="newItem"
+                        placeholder="Exemple: Huile de cuisson">
+                    <button class="btn btn-primary" @click="loadItem" style="float: right; margin: 8px;">Ajouter</button>
             `
-        };
+        };*/
 
-        const ItemGroupCheck = {
+        const InputGroupCheck = {
+            props: ['increment'],
             data() {
                 return {
                     designs: [
-                        { id: Math.ceil(Math.random() * 1000000), name: "Oui", color: "btn-outline-success" },
-                        { id: Math.ceil(Math.random() * 1000000), name: "Non", color: "btn-outline-danger" },
-                        { id: Math.ceil(Math.random() * 1000000), name: "Non évalué", color: "btn-outline-secondary" }
+                        { id: "ok_" + this.increment, name: "Oui", color: "btn-outline-success" },
+                        { id: "nok_" + this.increment, name: "Non", color: "btn-outline-danger" },
+                        { id: "none_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" }
                     ],
                     selectedDesign: null,
                 };
@@ -132,12 +138,12 @@
                                 <label class="btn" v-bind:for="design.id" v-bind:class="design.color">{{design.name}}</label>
                             </div>
                         </div>                   
-                       <span>Choisi : {{selectedDesign}}</span>
+                       <span>Choisi : {{selectedDesign}}</span><p>Incrémentation n° check : {{increment}}</p>
                     </div>
             `
         };
 
-        const ItemGroupContentLevel = {
+        const InputGroupContentLevel = {
             template: `
                 <div class="input-group">
                     <input class="form-control-sm" type="number" id="content-level" step="0.1">
@@ -148,29 +154,65 @@
             `
         };
 
-        const ItemGroupTemperature = {
+        const InputGroupTemperature = {
+            inheritAttrs: true,
+            props: ['initial', 'color', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange',],
+            emits: ['update:initial',],
+            data() {
+                return {
+                    idTemp: "idTemp_" + this.idtemperature,
+                    currentTemp: '',
+                    borderT: 'border border-4 border-success',
+                    styleT: '',
+                };
+            },
+            methods: {
+                emitValue(event, currentTemp) {
+
+                    this.currentTemp = event.target.value;
+
+                    if (this.currentTemp >= this.maxrouge || this.currentTemp <= this.minrouge) {
+                        this.borderT = 'border border-5 border-danger';
+                    }
+                    else if (this.currentTemp >= this.maxorange || this.currentTemp <= this.minorange) {
+                        this.borderT = 'border border-5 border-warning';
+                    }
+                    else {
+                        this.borderT = 'border border-4 border-success';
+                        this.styleT = 'background: pink'
+                    }
+
+                    this.$emit('update:initial', this.currentTemp);
+                }
+            },
             template: `
-                <div class="input-group">
-                    <input class="form-control-sm" type="number" id="temperature" step="0.1">
-                    <div class="input-group-append">
-                    <span class="input-group-text"> °C </span>
+                    <div class="input-group">
+                        <input class="form-control-sm" type="number" step="0.1" :value="initial" @input="emitValue" :name="idTemp">
+                        <div class="input-group-append">
+                            <span class="input-group-text" :class="borderT"> °C </span>
+                        </div>
                     </div>
-                </div>
-            `
-        };
+                   `
+        };// <img src="https://img-premium.flaticon.com/png/512/929/929416.png?token=exp=1621417826~hmac=a3f4f2ac5b773d0961a25a2becee060d" alt="cross" style="width: 8%; height: 8%">
 
         const questions = [
             {
                 type: 'temp',
                 label: 'Chambre froide',
-                maxR: '-15',
-                maxO: '-17',
+                default_value: 160,
+                maxR: 200,
+                minR: 130,
+                maxO: 180,
+                minO: 140,
             },
             {
                 type: 'temp',
                 label: 'Armoire 1',
-                maxR: '-15',
-                maxO: '-17',
+                default_value: 148,
+                maxR: 190,
+                minR: 120,
+                maxO: 170,
+                minO: 130,
             },
             {
                 type: 'check',
@@ -179,8 +221,8 @@
             {
                 type: 'teneur',
                 label: 'Relevé de composé',
-                maxR: '22',
-                maxO: '20',
+                maxR: 22,
+                maxO: 20,
             },
             {
                 type: 'check',
@@ -188,9 +230,12 @@
             },
             {
                 type: 'temp',
-                label: 'Armoire 1',
-                maxR: '-15',
-                maxO: '-17',
+                label: 'Armoire 2',
+                default_value: 165,
+                maxR: 200,
+                minR: 130,
+                maxO: 185,
+                minO: 140
             },
             {
                 type: 'check',
@@ -198,10 +243,10 @@
             },
         ];
 
-        questionnaire.component("item-group-check", ItemGroupCheck);
-        questionnaire.component("item-group-content-level", ItemGroupContentLevel);
-        questionnaire.component("item-group-temperature", ItemGroupTemperature);
-        questionnaire.component("add-item", AddItem)
+        questionnaire.component("input-group-check", InputGroupCheck);
+        questionnaire.component("input-group-content-level", InputGroupContentLevel);
+        questionnaire.component("input-group-temperature", InputGroupTemperature);
+        //questionnaire.component("add-item", AddItem);
         questionnaire.mount('#app');
     </script>
 </body>
