@@ -18,22 +18,33 @@
     <div id="app" class="row justify-content-center" style="padding: 16px;">
         <div class="col-lg-4">
 
-            <div v-for="(question, index) in questions" :key="question.label">
-                <blockquote class="blockquote">
-                    <p> {{ question.label }} </p>
-                </blockquote>
-                <div v-if="question.type === 'check' ">
-                    <input-group-check :increment="index"></input-group-check>
-                </div>
-                <div v-else-if="question.type === 'temp' ">
-                    <input-group-temperature v-model:initialtemp="question.default_value" :idtemperature="index"
-                        :maxrouge="question.maxR" :minrouge="question.minR" :maxorange="question.maxO"
-                        :minorange="question.minO">
-                    </input-group-temperature> lov : {{question.default_value}}
-                </div>
-                <div v-else-if="question.type === 'teneur' ">
-                    <input-group-content-level v-model:initialcontent="question.default_value" :idcontent="index"
-                        :maxrouge="question.maxR" :maxorange="question.maxO"></input-group-content-level>
+            <div v-for="(question, index) in questions" :key="question.category">
+                <h1 class="display-6"><strong> {{question.category}} </strong></h1>
+                <div v-for="parameter in question.parameters" :key="question.parameter">
+                    <blockquote class="blockquote">
+                        <p> {{parameter.labelgroup}} </p>
+                        <p> {{ parameter.label }} </p>
+                    </blockquote>
+
+                    <div v-if="parameter.type === 'check' ">
+                        <input-group-check :increment="index" :idcheck="parameter.label"></input-group-check>
+                    </div>
+
+                    <div v-else-if="parameter.type === 'temp' ">
+                        <input-group-temperature v-model:initialtemp="parameter.default_value_temp"
+                            :idtemperature="index" :maxrouge="parameter.max_rouge_temp"
+                            :minrouge="parameter.min_rouge_temp" :maxorange="parameter.max_orange_temp"
+                            :minorange="parameter.min_orange_temp" :idlabel="parameter.label">
+                        </input-group-temperature> <!--lov : {{parameter.default_value_temp}} -->
+                    </div>
+
+                    <div v-else-if="parameter.type === 'teneur' ">
+                        <input-group-content-level v-model:initialcontent="parameter.default_value_content"
+                            :idcontent="index" :maxrouge="parameter.max_rouge_content"
+                            :maxorange="parameter.max_orange_content" :idlabel="parameter.label">
+                        </input-group-content-level>
+
+                    </div>
                 </div>
                 <hr>
             </div>
@@ -47,21 +58,20 @@
             data() {
                 return {
                     questions,
-                    responses: [],
                 }
             },
         });
 
         const InputGroupCheck = {
-            props: ['increment'],
+            props: ['increment', 'idcheck'],
             data() {
                 return {
                     designs: [
-                        { id: "ok_" + this.increment, name: "Oui", color: "btn-outline-success" },
-                        { id: "nok_" + this.increment, name: "Non", color: "btn-outline-danger" },
-                        { id: "none_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" }
+                        { id: "ok_" + this.idcheck + "_" + this.increment, name: "Oui", color: "btn-outline-success" },
+                        { id: "nok_" + this.idcheck + "_" + this.increment, name: "Non", color: "btn-outline-danger" },
+                        { id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" }
                     ],
-                    selectedDesign: null,
+                    selectedDesign: { id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" },
                 };
             },
             template: `
@@ -71,21 +81,21 @@
                                 <input class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
                                 <label class="btn" v-bind:for="design.id" v-bind:class="design.color">{{design.name}}</label>
                             </div>
-                        </div>                   
-                       <span>Choisi : {{selectedDesign}}</span><p>Incrémentation n° check : {{increment}}</p>
+                        </div>
                     </div>
             `
-        };
+        };//<p>Choisi : {{selectedDesign}}</p>             
+
 
         const InputGroupContentLevel = {
-            props: ['initialcontent', 'idcontent', 'maxrouge', 'maxorange'],
+            props: ['initialcontent', 'idcontent', 'maxrouge', 'maxorange', 'idlabel'],
             emits: ['update:initialcontent',],
             data() {
                 return {
-                    idContent: "idContent_" + this.idContent,
+                    idContent: "idContent_" + this.idlabel + "_" + this.idContent,
                     currentContent: '',
-                    borderContent: 'border border-success rounded-3',
-                    imgContent: 'assets/correct.svg',
+                    borderContent: 'border border-info rounded-3',
+                    imgContent: 'assets/food.svg',
                 }
             },
             methods: {
@@ -93,11 +103,15 @@
 
                     this.currentContent = event.target.value;
 
-                    if (this.currentContent >= this.maxrouge) {
+                    if (this.currentContent == '') {
+                        this.imgContent = 'assets/food.svg';
+                        this.borderContent = 'border border-info rounded-3';
+                    }
+                    else if (this.currentContent > this.maxrouge) {
                         this.imgContent = 'assets/danger.svg';
                         this.borderContent = 'border border-danger rounded-3';
                     }
-                    else if (this.currentContent >= this.maxorange) {
+                    else if (this.currentContent > this.maxorange) {
                         this.imgContent = 'assets/warning.svg';
                         this.borderContent = 'border border-warning rounded-3';
                     }
@@ -111,8 +125,8 @@
             },
             template: `
                 <div class="input-group">
-                    <div class="col-sm" :class="borderContent">
-                        <input class="form-control" type="number" step="0.1" :value="initialcontent" @input="emitValue" :id="idContent" :name="idContent">
+                    <div class="col-sm">
+                        <input class="form-control" :class="borderContent" type="number" step="0.1" :value="initialcontent" @input="emitValue" :id="idContent" :name="idContent" placeholder="Saisir la teneur">
                     </div>
                     <div class="input-group-append">
                         <span class="input-group-text"> % </span>
@@ -123,14 +137,14 @@
         };
 
         const InputGroupTemperature = {
-            props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange',],
+            props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange', 'idlabel'],
             emits: ['update:initialtemp',],
             data() {
                 return {
-                    idTemp: "idTemp_" + this.idtemperature,
+                    idTemp: "idTemp_" + this.idlabel + "_" + this.idtemperature,
                     currentTemp: '',
-                    borderTemp: 'border border-success rounded-3',
-                    imgTemp: 'assets/correct.svg',
+                    borderTemp: 'border border-info rounded-3',
+                    imgTemp: 'assets/food.svg',
                 };
             },
             methods: {
@@ -138,11 +152,15 @@
 
                     this.currentTemp = event.target.value;
 
-                    if (this.currentTemp >= this.maxrouge || this.currentTemp <= this.minrouge) {
+                    if (this.currentTemp == '') {
+                        this.imgTemp = 'assets/food.svg';
+                        this.borderTemp = 'border border-info rounded-3';
+                    }
+                    else if (this.currentTemp > this.maxrouge || this.currentTemp < this.minrouge) {
                         this.imgTemp = 'assets/danger.svg';
                         this.borderTemp = 'border border-danger rounded-3';
                     }
-                    else if (this.currentTemp >= this.maxorange || this.currentTemp <= this.minorange) {
+                    else if (this.currentTemp > this.maxorange || this.currentTemp < this.minorange) {
                         this.imgTemp = 'assets/warning.svg';
                         this.borderTemp = 'border border-warning rounded-3';
                     }
@@ -156,8 +174,8 @@
             },
             template: `
                     <div class="input-group">
-                        <div class="col-sm" :class="borderTemp">
-                            <input class="form-control" type="number" step="0.1" :value="initialtemp" @input="emitValue" :id="idTemp" :name="idTemp">
+                        <div class="col-sm" >
+                            <input class="form-control" :class="borderTemp" type="number" step="0.1" :value="initialtemp" @input="emitValue" :id="idTemp" :name="idTemp" placeholder="Saisir la température">
                         </div>
                         <div class="input-group-append">
                             <span class="input-group-text"> °C </span>
@@ -165,61 +183,157 @@
                         <img :src="imgTemp" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
                     </div>
                    `
+                   //                    <p>Je suis l'id : {{idTemp}}</p>
         };
 
         const questions = [
             {
-                type: 'temp',
-                label: 'Chambre froide',
-                default_value: 160,
-                maxR: 200,
-                minR: 130,
-                maxO: 180,
-                minO: 140,
+                category: 'Température des stockages surgelés',
+                parameters: [
+                    {
+                        labelgroup: 'Chambre Froide -',
+                        type: 'temp',
+                        default_value_temp: '',
+                        max_orange_temp: -17,
+                        max_rouge_temp: -15,
+                        min_orange_temp: -23,
+                        min_rouge_temp: -25
+                    },
+                    {
+                        label: 'Armoire 1 -',
+                        type: 'temp',
+                        default_value_temp: '',
+                        max_orange_temp: -17,
+                        max_rouge_temp: -15,
+                        min_orange_temp: -23,
+                        min_rouge_temp: -25
+                    },
+                ],
             },
             {
-                type: 'temp',
-                label: 'Armoire 1',
-                default_value: 148,
-                maxR: 190,
-                minR: 120,
-                maxO: 170,
-                minO: 130,
+                category: 'Température des stockages réfrigérés',
+                parameters: [
+                    {
+                        labelgroup: 'Chambre Froide +',
+                        type: 'temp',
+                        default_value_temp: '',
+                        max_orange_temp: 4,
+                        max_rouge_temp: 7,
+                        min_orange_temp: 1,
+                        min_rouge_temp: 0
+                    },
+                    {
+                        label: 'Armoire 1 +',
+                        type: 'temp',
+                        default_value_temp: '',
+                        max_orange_temp: 4,
+                        max_rouge_temp: 7,
+                        min_orange_temp: 1,
+                        min_rouge_temp: 0
+                    },
+                ],
             },
             {
-                type: 'check',
-                label: 'DLC primaire',
+                category: 'Conservation des produits',
+                parameters: [
+                    {
+                        label: 'DLC primaire',
+                        type: 'check'
+                    },
+                    {
+                        label: 'DLC secondaire',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Rotation et présence étiquette',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Produits protégés et filmés',
+                        type: 'check'
+                    }
+                ],
             },
             {
-                type: 'teneur',
-                label: 'Relevé de composé 1',
-                default_value: 12,
-                maxR: 18,
-                maxO: 15,
+                category: 'Huile de cuisson',
+                parameters: [
+                    {
+                        labelgroup: 'Bac 1',
+                    },
+                    {
+                        label: 'Température de programmation',
+                        type: 'temp',
+                        default_value_temp: '',
+                        min_orange_temp: 165,
+                    },
+                    {
+                        label: 'Niveau d\'huile',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Relevé du composé polaire',
+                        type: 'teneur',
+                        default_value_content: '',
+                        max_orange_content: 20,
+                        max_rouge_content: 22,
+                    }
+                ],
             },
             {
-                type: 'teneur',
-                label: 'Relevé de composé 2',
-                default_value: 15,
-                maxR: 22,
-                maxO: 20,
+                category: 'Cuissons des produits grillés',
+                parameters: [
+                    {
+                        labelgroup: 'Grill 1'
+                    },
+                    {
+                        label: 'Propreté et état du grill, spatules, grattoirs...',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Température du grill',
+                        type: 'temp'
+                    },
+                    {
+                        label: 'Prise température interne du steak sur 1ère série',
+                        type: 'temp',
+                        default_value_content: '',
+                        max_orange_content: 20,
+                        max_rouge_content: 22,
+                    },
+                ],
             },
             {
-                type: 'check',
-                label: 'DLC secondaire',
+                category: 'Conservation des produits chauds',
+                parameters: [
+                    {
+                        label: 'Température du maintien chaud 1',
+                        type: 'temp',
+                        default_value_temp: '',
+                        min_orange_temp: 65,
+                        min_rouge_temp: 63,
+                    }
+                ],
             },
             {
-                type: 'temp',
-                label: 'Armoire 2',
-                default_value: 165,
-                maxR: 200,
-                minR: 130,
-                maxO: 185,
-                minO: 140
-            },
-            {
-                type: 'check',
-                label: 'Produits protégés et filmés	',
+                category: 'Nettoyage du matériel',
+                parameters: [
+                    {
+                        label: 'Propreté plonge',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Propreté coup-légume',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Propreté machine à glaces',
+                        type: 'check'
+                    },
+                    {
+                        label: 'Propreté zone marinade',
+                        type: 'check'
+                    }
+                ],
             },
         ];
 
