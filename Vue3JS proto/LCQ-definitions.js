@@ -5,63 +5,61 @@ const LCQ_FORMS = [
 		items: [
 			{
 				type: 'temperature', label: 'Chambre Froide -',
-				value: null, min_ROUGE_val: -25, min_ORANGE_val: -23, max_ORANGE_val: -17, max_ROUGE_val: -15
+				min_ROUGE: -25, min_ORANGE: -23, max_ORANGE: -17, max_ROUGE: -15
 			},
-			{	
+			{
 				type: 'repeatGroup',
-				minCount : 1, maxCount : 10,
+				minCount: 1, maxCount: 10,
 				itemBase: {
-					type: 'temperature', label: 'Armoire {n} -'
-					value: null, min_ROUGE_val: -25, min_ORANGE_val: -23, max_ORANGE_val: -17, max_ROUGE_val: -15
-				},
-				items : []
+					type: 'temperature', label: 'Armoire {i} -',
+					min_ROUGE: -25, min_ORANGE: -23, max_ORANGE: -17, max_ROUGE: -15
+				}
 			}
 		]
 	},
-	
+
 	{
 		category: 'FRIGOS',
 		formLabel: 'Température des stockages réfrigérés',
 		items: [
 			{
 				type: 'temperature', label: 'Chambre Froide +',
-				value: null, min_ROUGE_val: 0, min_ORANGE_val: 1, max_ORANGE_val: 4, max_ROUGE_val: 7
+				min_ROUGE: 0, min_ORANGE: 1, max_ORANGE: 4, max_ROUGE: 7
 			},
-			{	
+			{
 				type: 'repeatGroup',
-				minCount : 1, maxCount : 10,
+				minCount: 1, maxCount : 10,
 				itemBase: {
-					type: 'temperature', label: 'Armoire {n} +'
-					value: null, min_ROUGE_val: 0, min_ORANGE_val: 1, max_ORANGE_val: 4, max_ROUGE_val: 7
-				},
-				items : []
+					type: 'temperature', label: 'Armoire {i} +',
+					min_ROUGE: 0, min_ORANGE: 1, max_ORANGE: 4, max_ROUGE: 7
+				}
 			},
 			{
 				type: 'temperature', label: 'Machine à glace',
-				value: null, min_ROUGE_val: 0, min_ORANGE_val: 1, max_ORANGE_val: 4, max_ROUGE_val: 7
-			}					
+				min_ROUGE: 0, min_ORANGE: 1, max_ORANGE: 4, max_ROUGE: 7
+			}
 		]
 	},
-	
+
 	{
 		category: 'DLCS',
 		formLabel: 'Conservation des produits',
 		items: [
 			{
 				type: 'check', label: 'DLC primaire',
-				value: null, warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
 			},
 			{
 				type: 'check', label: 'DLC secondaire',
-				value: null, warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
 			},
 			{
 				type: 'check', label: 'Rotation et Présence étiquette',
-				value: null, warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
 			},
 			{
 				type: 'check', label: 'Produits protégés et filmés',
-				value: null, warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE', withComment: true, withPhotos: true,
 			}
 		]
 	},
@@ -70,124 +68,93 @@ const LCQ_FORMS = [
 		category: 'HUILES',
 		formLabel: 'Huiles de cuisson',
 		items: [
-			{	
+			{
 				type: 'repeatGroup',
-				minCount : 1, maxCount : 20,
+				minCount: 1, maxCount : 20,
 				itemBase: {
-					type: 'compoundGroup', label: 'Bac {n}'
+					type: 'compoundGroup', label: 'Bac {i}',
 					items: [
 						{
 							type: 'temperature', label: 'Température de programmation',
-							value: null, min_ORANGE_val: 165,
+							min_ORANGE: 165,
 						},
 						{
 							type: 'check', label: 'Niveau d\'huile',
-							value: null, warn_NOK: 'ORANGE', warn_NONE: 'ROUGE',
+							warn_NOK: 'ORANGE', warn_NONE: 'ROUGE',
 						},
 						{
-							type: 'contentLevel', label: 'Relevé du composé polaire', withComment: true, withPhotos: true,
-							value: null, max_ORANGE_val: 20, max_ROUGE_val: 22
+							type: 'contentLevel', label: 'Relevé du composé polaire',
+							max_ORANGE: 20, max_ROUGE: 22
 						}
 					]
-				},
-				items : []
+				}
+			}
+		]
+	},
+
+	{
+		category: 'GRILLS',
+		formLabel: 'Cuissons des produits grillés',
+		items: [
+			{
+				type: 'repeatGroup',
+				minCount : 1, maxCount : 10,
+				itemBase: {
+					type: 'compoundGroup', label: 'Grill {i}',
+					items: [
+						{
+							type: 'check', label: 'Propreté et état du grill, spatules, grattoirs...',
+							warn_NOK: 'ROUGE', warn_NONE: 'ROUGE',
+						},
+						{
+							type: 'temperature', label: 'Température du grill'
+						},
+						{
+							type: 'temperature', label: 'Prise température interne du steak sur 1ère série',
+							min_ROUGE: 63, min_ORANGE: 65
+						}
+					]
+				}
+			}
+		]
+	},
+
+	{
+		category: 'CHAUFFE',
+		formLabel: 'Conservation des produits chauds',
+		items: [
+			{
+				type: 'repeatGroup',
+				minCount: 1, maxCount: 10,
+				itemBase: {
+					type: 'temperature', label: 'Température du maintien chaud {i}',
+					min_ROUGE: 63, min_ORANGE: 65
+				}
+			}
+		]
+	},
+
+	{
+		category: 'NETTOYAGE',
+		formLabel: 'Nettoyage du matériel',
+		items: [
+			{
+				type: 'check', label: 'Propreté plonge',
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE',
+			},
+			{
+				type: 'check', label: 'Propreté coupe-légume',
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE',
+			},
+			{
+				type: 'check', label: 'Propreté machine à glaces',
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE',
+			},
+			{
+				type: 'check', label: 'Propreté zone marinade',
+				warn_NOK: 'ROUGE', warn_NONE: 'ROUGE',
 			}
 		]
 	}
+
 ];
-					
-/* ======================================================================================
-
-            {
-                category: 'Cuissons des produits grillés',
-                parameters: [
-                    {
-                        labelgroup: 'Grill 1'
-                    },
-                    {
-                        label: 'Propreté et état du grill, spatules, grattoirs...',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Température du grill',
-                        type: 'temp'
-                    },
-                    {
-                        label: 'Prise température interne du steak sur 1ère série',
-                        type: 'temp',
-                        default_value_content: '',
-                        max_orange_content: 20,
-                        max_rouge_content: 22,
-                    },
-                ],
-            },
-            {
-                category: 'Conservation des produits chauds',
-                parameters: [
-                    {
-                        label: 'Température du maintien chaud 1',
-                        type: 'temp',
-                        default_value_temp: '',
-                        min_orange_temp: 65,
-                        min_rouge_temp: 63,
-                    }
-                ],
-            },
-            {
-                category: 'Nettoyage du matériel',
-                parameters: [
-                    {
-                        label: 'Propreté plonge',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté coup-légume',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté machine à glaces',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté zone marinade',
-                        type: 'check'
-                    }
-                ],
-            },
-        ];
-
-			
-			<option value="GRILLS">Cuissons des produits grillés</option>
-			<option value="CHAUFFE">Conservation des produits chauds</option>
-			<option value="NETTOYAGE">Nettoyage du matériel</option>
-
-					{
-						formName: "5 - Cuissons des produits grillés",
-						items: [
-							new ItemGroup("Grill 1")
-								.add(new ItemCheckOK("Propreté et état du grill, spatules, grattoirs...", AbstractItem.ALERT_RED, AbstractItem.ALERT_RED))
-								.add(new ItemTemperature("Température du grill"))
-								.add(new ItemTemperature("Prise température interne du steak sur 1ère série").min_ORANGE(65).min_RED(63)),
-						]
-					},
-					
-					{
-						formName: "6 - Conservation des produits chauds",
-						items: [
-							new ItemGroup("Température du maintien chaud 1")
-								.add(new ItemTemperature("").min_ORANGE(65).min_RED(63))
-						]
-					},
-					
-					{
-						formName: "7 - Nettoyage du matériel",
-						items: [
-							new ItemCheckOK("Propreté plonge", AbstractItem.ALERT_RED, AbstractItem.ALERT_RED),
-							new ItemCheckOK("Propreté coupe-légume", AbstractItem.ALERT_RED, AbstractItem.ALERT_RED),
-							new ItemCheckOK("Propreté machine à glaces", AbstractItem.ALERT_RED, AbstractItem.ALERT_RED),
-							new ItemCheckOK("Propreté zone marinade", AbstractItem.ALERT_RED, AbstractItem.ALERT_RED)
-						]
-					}
-
-					
-*/					
