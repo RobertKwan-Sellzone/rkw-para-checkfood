@@ -18,15 +18,19 @@
     <div id="app" class="row justify-content-center" style="padding: 16px;">
         <div class="col-lg-4">
 
-            <div v-for="(question, index) in questions" :key="question.category">
-                <h1 class="display-6"><strong> {{question.category}} </strong></h1>
-                <div v-for="parameter in question.parameters" :key="question.parameter">
+            <div v-for="c in courrier">
+                <blog-post :post="c"></blog-post>
+            </div>
+
+            <div v-for="(formulaire, index) in formulaires" :key="formulaire.category">
+                <h1 class="display-6"> %[formulaire.category]% </h1>
+                <div v-for="parameter in formulaire.parameters" :key="formulaire.parameter">
+                    <h4> %[parameter.labelgroup]% </h4>
                     <blockquote class="blockquote">
-                        <p> {{parameter.labelgroup}} </p>
-                        <p> {{ parameter.label }} </p>
+                        <p> %[ parameter.label ]% </p>
                     </blockquote>
 
-                    <div v-if="parameter.type === 'check' ">
+                     <div v-if="parameter.type === 'check' ">
                         <input-group-check :increment="index" :idcheck="parameter.label"></input-group-check>
                     </div>
 
@@ -35,7 +39,7 @@
                             :idtemperature="index" :maxrouge="parameter.max_rouge_temp"
                             :minrouge="parameter.min_rouge_temp" :maxorange="parameter.max_orange_temp"
                             :minorange="parameter.min_orange_temp" :idlabel="parameter.label">
-                        </input-group-temperature> <!--lov : {{parameter.default_value_temp}} -->
+                        </input-group-temperature> lov : %[parameter.default_value_temp]% 
                     </div>
 
                     <div v-else-if="parameter.type === 'teneur' ">
@@ -45,24 +49,54 @@
                         </input-group-content-level>
 
                     </div>
-                </div>
-                <hr>
-            </div>
         </div>
+        <hr>
+    </div>
+    </div>
     </div>
 
     <script>
 
 
-        const questionnaire = Vue.createApp({
+        const appFormulaire = Vue.createApp({
+            delimiters: ['%[', ']%'],
             data() {
                 return {
-                    questions,
+                    formulaires,
+                    courrier,
                 }
             },
         });
 
+        const courrier = [
+            {
+                id: 1,
+                title: 'Mon initiation avec Vue',
+                max_ORANGE: 50
+            },
+            {
+                id: 2,
+                title: 'Ma vie de patate'
+            }
+        ];
+
+        const blogPost = {
+            delimiters: ['%[', ']%'],
+            props: {
+                post: {
+                    type: Object,
+                    id: Number,
+                    title: String,
+                    max_ORANGE: Number
+                }
+            },
+            template: `
+                <h1 :id="post.id">%[post.id]%. %[ post.title ]% vaut %[post.max_ORANGE]%</h1>
+            `
+        }
+
         const InputGroupCheck = {
+            delimiters: ['%[', ']%'],
             props: ['increment', 'idcheck'],
             data() {
                 return {
@@ -79,7 +113,7 @@
                         <div class="row justify-content-md-center">
                             <div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
                                 <input class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
-                                <label class="btn" v-bind:for="design.id" v-bind:class="design.color">{{design.name}}</label>
+                                <label class="btn" v-bind:for="design.id" v-bind:class="design.color">%[design.name]%</label>
                             </div>
                         </div>
                     </div>
@@ -183,10 +217,10 @@
                         <img :src="imgTemp" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
                     </div>
                    `
-                   //                    <p>Je suis l'id : {{idTemp}}</p>
+            //                    <p>Je suis l'id : {{idTemp}}</p>
         };
 
-        const questions = [
+        const formulaires = [
             {
                 category: 'Température des stockages surgelés',
                 parameters: [
@@ -258,7 +292,7 @@
                 category: 'Huile de cuisson',
                 parameters: [
                     {
-                        labelgroup: 'Bac 1',
+                        label: 'Bac 1',
                     },
                     {
                         label: 'Température de programmation',
@@ -337,10 +371,11 @@
             },
         ];
 
-        questionnaire.component("input-group-check", InputGroupCheck);
-        questionnaire.component("input-group-content-level", InputGroupContentLevel);
-        questionnaire.component("input-group-temperature", InputGroupTemperature);
-        questionnaire.mount('#app');
+        appFormulaire.component("input-group-check", InputGroupCheck);
+        appFormulaire.component("blog-post", blogPost);        
+        appFormulaire.component("input-group-content-level", InputGroupContentLevel);
+        appFormulaire.component("input-group-temperature", InputGroupTemperature);
+        appFormulaire.mount('#app');
     </script>
 </body>
 
