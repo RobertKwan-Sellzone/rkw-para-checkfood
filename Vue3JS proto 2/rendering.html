@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Proto-Questionnaire VueJS v.4</title>
+
+	<script src="https://unpkg.com/vue@next"></script>
+	<script src="./LCQ-definitions.js"></script>
+	<script src="./conversions.js"></script>
+
+	<script>
+		//CONVERSIONS.JS TESTING -- START
+		let myNewForm = buildNewForm('CONGELS');
+		console.log(myNewForm);
+		//CONVERSIONS.JS TESTING -- END
+
+
+		// const appLCQForm = Vue.createApp({
+		// 	delimiters: ['%[', ']%'],
+		// 	data() {
+		// 		return {
+		// 			/* XXXX */
+		// 		}
+		// 	},
+		// });
+
+		// //TODO composants ItemCheck, ItemTemperature, ItemContentLevel
+
+		// appLCQForm.component("check", ItemCheck);
+		// appLCQForm.component("temperature", ItemTemperature);
+		// appLCQForm.component("contentLevel", ItemContentLevel);
+		// appLCQForm.mount('#appLCQForm');
+	</script>
+</head>
+
+<body>
+	<div id="appLCQForm">
+
+	</div>
+<body>
+</html>
