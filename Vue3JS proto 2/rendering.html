@@ -9,29 +9,7 @@
 	<script src="./LCQ-definitions.js"></script>
 	<script src="./conversions.js"></script>
 
-	<script>
-		//CONVERSIONS.JS TESTING -- START
-		let myNewForm = buildNewForm('CONGELS');
-		console.log(myNewForm);
-		//CONVERSIONS.JS TESTING -- END
 
-
-		// const appLCQForm = Vue.createApp({
-		// 	delimiters: ['%[', ']%'],
-		// 	data() {
-		// 		return {
-		// 			/* XXXX */
-		// 		}
-		// 	},
-		// });
-
-		// //TODO composants ItemCheck, ItemTemperature, ItemContentLevel
-
-		// appLCQForm.component("check", ItemCheck);
-		// appLCQForm.component("temperature", ItemTemperature);
-		// appLCQForm.component("contentLevel", ItemContentLevel);
-		// appLCQForm.mount('#appLCQForm');
-	</script>
 </head>
 
 <body>
@@ -45,8 +23,171 @@
 			<option value="GRILLS">Cuissons des produits grillés</option>
 			<option value="CHAUFFE">Conservation des produits chauds</option>
 			<option value="NETTOYAGE">Nettoyage du matériel</option>
-		</select>	
+		</select>
 
+		<div>
+			<h1>%[myNewForm.formLabel]%</h1>
+			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
+				<temperature :item_temperature="item"></temperature>
+				<content-level :item_content_level="item"></content-level>
+				<check :item_check="item"></check>
+			</div>
+		</div>
 	</div>
-<body>
+
+	<script>
+		//CONVERSIONS.JS TESTING -- START
+		let myNewForm = buildNewForm('CONGELS');
+		console.log(myNewForm);
+		//CONVERSIONS.JS TESTING -- END
+
+
+		const appLCQForm = Vue.createApp({
+			delimiters: ['%[', ']%'],
+			data() {
+				return {
+					myNewForm,
+				}
+			},
+		});
+
+		const ItemCheck = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item_check: {
+					type: Object,
+				}
+			},
+			data() {
+				return {
+					picked: '',
+					alert_msg: 'À faire',
+					alert_color: 'DodgerBlue',
+				};
+			},
+			methods: {
+				alert() {
+					if((this.picked == "none" && this.item_check.warn_NONE == "ROUGE") || this.picked == "nok") {
+						this.alert_msg = "Attention !";
+						this.alert_color = "red";
+					}
+					else if(this.picked == "none" && this.item_check.warn_NONE == "ORANGE") {
+						this.alert_msg = "N'oubliez pas !";
+						this.alert_color = "orange";
+					}
+					else{
+						this.alert_msg = " ";
+					}
+				}
+			},
+			template: `
+				<div v-if="item_check.type === 'check' ">
+					<p>%[item_check.label]%</p>
+					<input type="radio" :id="'ok_' +item_check.$$$idkey" value="ok" v-model="picked" @change="alert"/>
+					<label :for="'ok_' + item_check.$$$idkey">Fait</label>
+
+					<input type="radio" :id="'nok_' + item_check.$$$idkey" value="nok" v-model="picked" @change="alert"/>
+					<label :for="'nok_' + item_check.$$$idkey">Pas fait</label>
+
+					<input type="radio" :id="'none_' + item_check.$$$idkey" value="none" v-model="picked" @change="alert"/>
+					<label :for="'none_' + item_check.$$$idkey">Pas encore fait</label>
+
+					&nbsp;
+					<span :style="{color: alert_color}">%[alert_msg]%</span>
+				</div>
+				<hr>
+			`
+		};
+
+		const ItemTemperature = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item_temperature: {
+					type: Object,
+				},
+			},
+			data() {
+				return {
+					stateColor: "springgreen",
+					state: "GOOD",
+					currentValue: Number,
+				};
+			},
+			methods: {
+				compareValue(event) {
+					this.currentValue = event.target.value;
+					if (this.currentValue > this.item_temperature.max_ROUGE || this.currentValue < this.item_temperature.min_ROUGE) {
+						this.stateColor = "red";
+						this.state = "DANGER";
+					}
+					else if (this.currentValue > this.item_temperature.max_ORANGE || this.currentValue < this.item_temperature.min_ORANGE) {
+						this.stateColor = "orange";
+						this.state = "WARNING";
+					}
+					else {
+						this.stateColor = "springgreen";
+						this.state = "GOOD";
+					}
+				}
+
+			},
+			template: `
+				<div v-if="item_temperature.type === 'temperature' ">
+					<p>%[item_temperature.label]%</p>
+					<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item_temperature.label" :id="item_temperature.$$$idkey">°C
+					<div :style="{color: stateColor}">%[state]%</div>
+				</div>
+				   `
+		};
+
+		const ItemContentLevel = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item_content_level: {
+					type: Object,
+				},
+			},
+			data() {
+				return {
+					stateColor: "springgreen",
+					state: "GOOD",
+					currentValue: Number,
+				};
+			},
+			methods: {
+				compareValue(event) {
+					this.currentValue = event.target.value;
+					if (this.currentValue > this.item_content_level.max_ROUGE) {
+						this.stateColor = "red";
+						this.state = "DANGER";
+					}
+					else if (this.currentValue > this.item_content_level.max_ORANGE) {
+						this.stateColor = "orange";
+						this.state = "WARNING";
+					}
+					else {
+						this.stateColor = "springgreen";
+						this.state = "GOOD";
+					}
+				}
+			},
+			template: `
+				<div v-if="item_content_level.type === 'contentLevel' ">
+					<p>%[item_content_level.label]%</p>
+					<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item_content_level.label" :id="item_content_level.$$$idkey">°C
+					<div :style="{color: stateColor}">%[state]%</div>
+				</div>
+				   `
+		};
+
+		// //TODO composants ItemCheck, ItemTemperature, ItemContentLevel
+
+		appLCQForm.component("check", ItemCheck);
+		appLCQForm.component("temperature", ItemTemperature);
+		appLCQForm.component("content-level", ItemContentLevel);
+		appLCQForm.mount('#appLCQForm');
+	</script>
+
+	<body>
+
 </html>
