@@ -2,400 +2,400 @@
 <html>
 
 <head>
-    <script src="https://unpkg.com/vue@next"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
-        crossorigin="anonymous"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<script src="https://unpkg.com/vue@next"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+		crossorigin="anonymous"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
-    <title>Questionnaire ver. Vue 3 JS</title>
+	<title>Questionnaire ver. Vue 3 JS</title>
 
 </head>
 
 <body>
-    <div id="app" class="row justify-content-center" style="padding: 16px;">
-        <div class="col-lg-4">
+	<div id="app" class="row justify-content-center" style="padding: 16px;">
+		<div class="col-lg-4">
 
-            <div v-for="c in courrier">
-                <blog-post :post="c"></blog-post>
-            </div>
+			<div v-for="c in courrier">
+				<blog-post :post="c"></blog-post>
+			</div>
 
-            <div v-for="(formulaire, index) in formulaires" :key="formulaire.category">
-                <h1 class="display-6"> %[formulaire.category]% </h1>
-                <div v-for="parameter in formulaire.parameters" :key="formulaire.parameter">
-                    <!--    <h4> %[parameter.labelgroup]% </h4>
-                    <blockquote class="blockquote">
-                        <p> %[ parameter.label ]% </p>
-                    </blockquote>
+			<div v-for="(formulaire, index) in formulaires" :key="formulaire.category">
+				<h1 class="display-6"> %[formulaire.category]% </h1>
+				<div v-for="parameter in formulaire.parameters" :key="formulaire.parameter">
+					<!--    <h4> %[parameter.labelgroup]% </h4>
+					<blockquote class="blockquote">
+						<p> %[ parameter.label ]% </p>
+					</blockquote>
 
-                    <div v-if="parameter.type === 'check' ">
-                        <input-group-check :increment="index" :idcheck="parameter.label"></input-group-check>
-                    </div>
+					<div v-if="parameter.type === 'check' ">
+						<input-group-check :increment="index" :idcheck="parameter.label"></input-group-check>
+					</div>
 
-                    <div v-else-if="parameter.type === 'temp' ">
-                        <input-group-temperature v-model:initialtemp="parameter.default_value_temp"
-                            :idtemperature="index" :maxrouge="parameter.max_rouge_temp"
-                            :minrouge="parameter.min_rouge_temp" :maxorange="parameter.max_orange_temp"
-                            :minorange="parameter.min_orange_temp" :idlabel="parameter.label">
-                        </input-group-temperature> lov : %[parameter.default_value_temp]%
-                    </div>
+					<div v-else-if="parameter.type === 'temp' ">
+						<input-group-temperature v-model:initialtemp="parameter.default_value_temp"
+							:idtemperature="index" :maxrouge="parameter.max_rouge_temp"
+							:minrouge="parameter.min_rouge_temp" :maxorange="parameter.max_orange_temp"
+							:minorange="parameter.min_orange_temp" :idlabel="parameter.label">
+						</input-group-temperature> lov : %[parameter.default_value_temp]%
+					</div>
 
-                    <div v-else-if="parameter.type === 'teneur' ">
-                        <input-group-content-level v-model:initialcontent="parameter.default_value_content"
-                            :idcontent="index" :maxrouge="parameter.max_rouge_content"
-                            :maxorange="parameter.max_orange_content" :idlabel="parameter.label">
-                        </input-group-content-level>
+					<div v-else-if="parameter.type === 'teneur' ">
+						<input-group-content-level v-model:initialcontent="parameter.default_value_content"
+							:idcontent="index" :maxrouge="parameter.max_rouge_content"
+							:maxorange="parameter.max_orange_content" :idlabel="parameter.label">
+						</input-group-content-level>
 
-                    </div> -->
+					</div> -->
 
-                    <div v-if="parameter.type === 'temp' ">
-                        <input-group-temperature v-model:initialtemp="parameter.default_value_temp"
-                            :temperature="parameter">
-                        </input-group-temperature> lov : %[parameter.default_value_temp]%
-                    </div>
+					<div v-if="parameter.type === 'temp' ">
+						<input-group-temperature v-model:initialtemp="parameter.default_value_temp"
+							:temperature="parameter">
+						</input-group-temperature> lov : %[parameter.default_value_temp]%
+					</div>
 
-                </div>
-                <hr>
-            </div>
-        </div>
-    </div>
+				</div>
+				<hr>
+			</div>
+		</div>
+	</div>
 
-    <script type="module">
-        import { LCQ_FORMS } from './LCQ-definitions.js';
+	<script type="module">
+		import { LCQ_FORMS } from './LCQ-definitions.js';
 
-        let oui = LCQ_FORMS;
+		let oui = LCQ_FORMS;
 
-        const appFormulaire = Vue.createApp({
-            delimiters: ['%[', ']%'],
-            data() {
-                return {
-                    formulaires,
-                    courrier,
-                }
-            },
-        });
+		const appFormulaire = Vue.createApp({
+			delimiters: ['%[', ']%'],
+			data() {
+				return {
+					formulaires,
+					courrier,
+				}
+			},
+		});
 
-        const courrier = [
-            {
-                id: 1,
-                title: 'Mon initiation avec Vue',
-                max_ORANGE: 50,
-                type: 'temp'
-            },
-            {
-                id: 2,
-                title: 'Ma vie de patate',
-                type: 'check'
-            }
-        ];
+		const courrier = [
+			{
+				id: 1,
+				title: 'Mon initiation avec Vue',
+				max_ORANGE: 50,
+				type: 'temp'
+			},
+			{
+				id: 2,
+				title: 'Ma vie de patate',
+				type: 'check'
+			}
+		];
 
-        const blogPost = {
-            delimiters: ['%[', ']%'],
-            props: {
-                post: {
-                    type: Object,
-                }
-            },
-            data() {
-                return {
-                    truc: this.post.id * 10
-                };
-            },
-            template: `
-                <h1 :id="post.id">%[post.id]%. %[ post.title ]% vaut %[post.max_ORANGE]% est de type %[post.type]%</h1>
-                <p>%[truc]%</p>
-            `
-        }
+		const blogPost = {
+			delimiters: ['%[', ']%'],
+			props: {
+				post: {
+					type: Object,
+				}
+			},
+			data() {
+				return {
+					truc: this.post.id * 10
+				};
+			},
+			template: `
+				<h1 :id="post.id">%[post.id]%. %[ post.title ]% vaut %[post.max_ORANGE]% est de type %[post.type]%</h1>
+				<p>%[truc]%</p>
+			`
+		}
 
-        const InputGroupCheck = {
-            delimiters: ['%[', ']%'],
-            props: ['increment', 'idcheck'],
-            data() {
-                return {
-                    designs: [
-                        { id: "ok_" + this.idcheck + "_" + this.increment, name: "Oui", color: "btn-outline-success" },
-                        { id: "nok_" + this.idcheck + "_" + this.increment, name: "Non", color: "btn-outline-danger" },
-                        { id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" }
-                    ],
-                    selectedDesign: { id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" },
-                };
-            },
-            template: `
-                    <div class="mb-3">
-                        <div class="row justify-content-md-center">
-                            <div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
-                                <input class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
-                                <label class="btn" v-bind:for="design.id" v-bind:class="design.color">%[design.name]%</label>
-                            </div>
-                        </div>
-                    </div>
-            `
-        };//<p>Choisi : {{selectedDesign}}</p>
+		const InputGroupCheck = {
+			delimiters: ['%[', ']%'],
+			props: ['increment', 'idcheck'],
+			data() {
+				return {
+					designs: [
+						{ id: "ok_" + this.idcheck + "_" + this.increment, name: "Oui", color: "btn-outline-success" },
+						{ id: "nok_" + this.idcheck + "_" + this.increment, name: "Non", color: "btn-outline-danger" },
+						{ id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" }
+					],
+					selectedDesign: { id: "none_" + this.idcheck + "_" + this.increment, name: "Non évalué", color: "btn-outline-secondary" },
+				};
+			},
+			template: `
+					<div class="mb-3">
+						<div class="row justify-content-md-center">
+							<div v-for="design in designs" :key="design.id" class="col-auto col-sm-auto">
+								<input class="btn-check" type="radio" :value="design" v-model="selectedDesign" :id="design.id" :name="design.id">
+								<label class="btn" v-bind:for="design.id" v-bind:class="design.color">%[design.name]%</label>
+							</div>
+						</div>
+					</div>
+			`
+		};//<p>Choisi : {{selectedDesign}}</p>
 
 
-        const InputGroupContentLevel = {
-            props: ['initialcontent', 'idcontent', 'maxrouge', 'maxorange', 'idlabel'],
-            emits: ['update:initialcontent',],
-            data() {
-                return {
-                    idContent: "idContent_" + this.idlabel + "_" + this.idContent,
-                    currentContent: '',
-                    borderContent: 'border border-info rounded-3',
-                    imgContent: 'assets/food.svg',
-                }
-            },
-            methods: {
-                emitValue(event, currentContent) {
+		const InputGroupContentLevel = {
+			props: ['initialcontent', 'idcontent', 'maxrouge', 'maxorange', 'idlabel'],
+			emits: ['update:initialcontent',],
+			data() {
+				return {
+					idContent: "idContent_" + this.idlabel + "_" + this.idContent,
+					currentContent: '',
+					borderContent: 'border border-info rounded-3',
+					imgContent: 'assets/food.svg',
+				}
+			},
+			methods: {
+				emitValue(event, currentContent) {
 
-                    this.currentContent = event.target.value;
+					this.currentContent = event.target.value;
 
-                    if (this.currentContent == '') {
-                        this.imgContent = 'assets/food.svg';
-                        this.borderContent = 'border border-info rounded-3';
-                    }
-                    else if (this.currentContent > this.maxrouge) {
-                        this.imgContent = 'assets/danger.svg';
-                        this.borderContent = 'border border-danger rounded-3';
-                    }
-                    else if (this.currentContent > this.maxorange) {
-                        this.imgContent = 'assets/warning.svg';
-                        this.borderContent = 'border border-warning rounded-3';
-                    }
-                    else {
-                        this.imgContent = 'assets/correct.svg';
-                        this.borderContent = 'border border-success rounded-3';
-                    }
+					if (this.currentContent == '') {
+						this.imgContent = 'assets/food.svg';
+						this.borderContent = 'border border-info rounded-3';
+					}
+					else if (this.currentContent > this.maxrouge) {
+						this.imgContent = 'assets/danger.svg';
+						this.borderContent = 'border border-danger rounded-3';
+					}
+					else if (this.currentContent > this.maxorange) {
+						this.imgContent = 'assets/warning.svg';
+						this.borderContent = 'border border-warning rounded-3';
+					}
+					else {
+						this.imgContent = 'assets/correct.svg';
+						this.borderContent = 'border border-success rounded-3';
+					}
 
-                    this.$emit('update:initialcontent', this.currentContent);
-                }
-            },
-            template: `
-                <div class="input-group">
-                    <div class="col-sm">
-                        <input class="form-control" :class="borderContent" type="number" step="0.1" :value="initialcontent" @input="emitValue" :id="idContent" :name="idContent" placeholder="Saisir la teneur">
-                    </div>
-                    <div class="input-group-append">
-                        <span class="input-group-text"> % </span>
-                    </div>
-                    <img :src="imgContent" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
-                </div>
-            `
-        };
+					this.$emit('update:initialcontent', this.currentContent);
+				}
+			},
+			template: `
+				<div class="input-group">
+					<div class="col-sm">
+						<input class="form-control" :class="borderContent" type="number" step="0.1" :value="initialcontent" @input="emitValue" :id="idContent" :name="idContent" placeholder="Saisir la teneur">
+					</div>
+					<div class="input-group-append">
+						<span class="input-group-text"> % </span>
+					</div>
+					<img :src="imgContent" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
+				</div>
+			`
+		};
 
-        const InputGroupTemperature = {
-            //props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange', 'idlabel'],
-            props: {
-                temperature: {
-                    type: Object,
-                },
-                initialtemp: String,
-            },
-            emits: ['update:initialtemp',],
-            data() {
-                return {
-                    idTemp: "idTemp_" + this.temperature.label + "_" + this.idtemperature,
-                    currentTemp: Number,
-                    borderTemp: 'border border-info rounded-3',
-                    imgTemp: 'assets/food.svg',
-                };
-            },
-            methods: {
-                emitValue(event, currentTemp) {
+		const InputGroupTemperature = {
+			//props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange', 'idlabel'],
+			props: {
+				temperature: {
+					type: Object,
+				},
+				initialtemp: String,
+			},
+			emits: ['update:initialtemp',],
+			data() {
+				return {
+					idTemp: "idTemp_" + this.temperature.label + "_" + this.idtemperature,
+					currentTemp: Number,
+					borderTemp: 'border border-info rounded-3',
+					imgTemp: 'assets/food.svg',
+				};
+			},
+			methods: {
+				emitValue(event, currentTemp) {
 
-                    this.currentTemp = event.target.value;
+					this.currentTemp = event.target.value;
 
-                    if (this.currentTemp == '') {
-                        this.imgTemp = 'assets/food.svg';
-                        this.borderTemp = 'border border-info rounded-3';
-                    }
-                    else if (this.currentTemp > this.temperature.max_rouge_temp || this.currentTemp < this.temperature.min_rouge_temp) {
-                        this.imgTemp = 'assets/danger.svg';
-                        this.borderTemp = 'border border-danger rounded-3';
-                    }
-                    else if (this.currentTemp > this.temperature.max_orange_temp || this.currentTemp < this.temperature.min_orange_temp) {
-                        this.imgTemp = 'assets/warning.svg';
-                        this.borderTemp = 'border border-warning rounded-3';
-                    }
-                    else {
-                        this.imgTemp = 'assets/correct.svg';
-                        this.borderTemp = 'border border-success rounded-3';
-                    }
+					if (this.currentTemp == '') {
+						this.imgTemp = 'assets/food.svg';
+						this.borderTemp = 'border border-info rounded-3';
+					}
+					else if (this.currentTemp > this.temperature.max_rouge_temp || this.currentTemp < this.temperature.min_rouge_temp) {
+						this.imgTemp = 'assets/danger.svg';
+						this.borderTemp = 'border border-danger rounded-3';
+					}
+					else if (this.currentTemp > this.temperature.max_orange_temp || this.currentTemp < this.temperature.min_orange_temp) {
+						this.imgTemp = 'assets/warning.svg';
+						this.borderTemp = 'border border-warning rounded-3';
+					}
+					else {
+						this.imgTemp = 'assets/correct.svg';
+						this.borderTemp = 'border border-success rounded-3';
+					}
 
-                    this.$emit('update:initialtemp', this.currentTemp);
-                }
-            },
-            template: `
-                    <div class="input-group">
-                        <div class="col-sm" >
-                            <input class="form-control" :class="borderTemp" type="number" step="0.1" @input="emitValue" :id="temperature.label" :name="temperature.label" placeholder="Saisir la température">
-                        </div>
-                        <div class="input-group-append">
-                            <span class="input-group-text"> °C </span>
-                        </div>
-                        <img :src="imgTemp" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
-                    </div>
-                   `
-        };
+					this.$emit('update:initialtemp', this.currentTemp);
+				}
+			},
+			template: `
+					<div class="input-group">
+						<div class="col-sm" >
+							<input class="form-control" :class="borderTemp" type="number" step="0.1" @input="emitValue" :id="temperature.label" :name="temperature.label" placeholder="Saisir la température">
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text"> °C </span>
+						</div>
+						<img :src="imgTemp" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
+					</div>
+				   `
+		};
 
-        const formulaires = [
-            {
-                category: 'Température des stockages surgelés',
-                parameters: [
-                    {
-                        labelgroup: 'Chambre Froide -',
-                        type: 'temp',
-                        default_value_temp: null,
-                        max_orange_temp: -17,
-                        max_rouge_temp: -15,
-                        min_orange_temp: -23,
-                        min_rouge_temp: -25
-                    },
-                    {
-                        label: 'Armoire 1 -',
-                        type: 'temp',
-                        default_value_temp: null,
-                        max_orange_temp: -17,
-                        max_rouge_temp: -15,
-                        min_orange_temp: -23,
-                        min_rouge_temp: -25
-                    },
-                ],
-            },
-            {
-                category: 'Température des stockages réfrigérés',
-                parameters: [
-                    {
-                        labelgroup: 'Chambre Froide +',
-                        type: 'temp',
-                        default_value_temp: null,
-                        max_orange_temp: 4,
-                        max_rouge_temp: 7,
-                        min_orange_temp: 1,
-                        min_rouge_temp: 0
-                    },
-                    {
-                        label: 'Armoire 1 +',
-                        type: 'temp',
-                        default_value_temp: null,
-                        max_orange_temp: 4,
-                        max_rouge_temp: 7,
-                        min_orange_temp: 1,
-                        min_rouge_temp: 0
-                    },
-                ],
-            },
-            {
-                category: 'Conservation des produits',
-                parameters: [
-                    {
-                        label: 'DLC primaire',
-                        type: 'check'
-                    },
-                    {
-                        label: 'DLC secondaire',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Rotation et présence étiquette',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Produits protégés et filmés',
-                        type: 'check'
-                    }
-                ],
-            },
-            {
-                category: 'Huile de cuisson',
-                parameters: [
-                    {
-                        label: 'Bac 1',
-                    },
-                    {
-                        label: 'Température de programmation',
-                        type: 'temp',
-                        default_value_temp: null,
-                        min_orange_temp: 165,
-                    },
-                    {
-                        label: 'Niveau d\'huile',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Relevé du composé polaire',
-                        type: 'teneur',
-                        default_value_content: '',
-                        max_orange_content: 20,
-                        max_rouge_content: 22,
-                    }
-                ],
-            },
-            {
-                category: 'Cuissons des produits grillés',
-                parameters: [
-                    {
-                        labelgroup: 'Grill 1'
-                    },
-                    {
-                        label: 'Propreté et état du grill, spatules, grattoirs...',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Température du grill',
-                        type: 'temp'
-                    },
-                    {
-                        label: 'Prise température interne du steak sur 1ère série',
-                        type: 'temp',
-                        default_value_content: '',
-                        max_orange_content: 20,
-                        max_rouge_content: 22,
-                    },
-                ],
-            },
-            {
-                category: 'Conservation des produits chauds',
-                parameters: [
-                    {
-                        label: 'Température du maintien chaud 1',
-                        type: 'temp',
-                        default_value_temp: null,
-                        min_orange_temp: 65,
-                        min_rouge_temp: 63,
-                    }
-                ],
-            },
-            {
-                category: 'Nettoyage du matériel',
-                parameters: [
-                    {
-                        label: 'Propreté plonge',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté coup-légume',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté machine à glaces',
-                        type: 'check'
-                    },
-                    {
-                        label: 'Propreté zone marinade',
-                        type: 'check'
-                    }
-                ],
-            },
-        ];
+		const formulaires = [
+			{
+				category: 'Température des stockages surgelés',
+				parameters: [
+					{
+						labelgroup: 'Chambre Froide -',
+						type: 'temp',
+						default_value_temp: null,
+						max_orange_temp: -17,
+						max_rouge_temp: -15,
+						min_orange_temp: -23,
+						min_rouge_temp: -25
+					},
+					{
+						label: 'Armoire 1 -',
+						type: 'temp',
+						default_value_temp: null,
+						max_orange_temp: -17,
+						max_rouge_temp: -15,
+						min_orange_temp: -23,
+						min_rouge_temp: -25
+					},
+				],
+			},
+			{
+				category: 'Température des stockages réfrigérés',
+				parameters: [
+					{
+						labelgroup: 'Chambre Froide +',
+						type: 'temp',
+						default_value_temp: null,
+						max_orange_temp: 4,
+						max_rouge_temp: 7,
+						min_orange_temp: 1,
+						min_rouge_temp: 0
+					},
+					{
+						label: 'Armoire 1 +',
+						type: 'temp',
+						default_value_temp: null,
+						max_orange_temp: 4,
+						max_rouge_temp: 7,
+						min_orange_temp: 1,
+						min_rouge_temp: 0
+					},
+				],
+			},
+			{
+				category: 'Conservation des produits',
+				parameters: [
+					{
+						label: 'DLC primaire',
+						type: 'check'
+					},
+					{
+						label: 'DLC secondaire',
+						type: 'check'
+					},
+					{
+						label: 'Rotation et présence étiquette',
+						type: 'check'
+					},
+					{
+						label: 'Produits protégés et filmés',
+						type: 'check'
+					}
+				],
+			},
+			{
+				category: 'Huile de cuisson',
+				parameters: [
+					{
+						label: 'Bac 1',
+					},
+					{
+						label: 'Température de programmation',
+						type: 'temp',
+						default_value_temp: null,
+						min_orange_temp: 165,
+					},
+					{
+						label: 'Niveau d\'huile',
+						type: 'check'
+					},
+					{
+						label: 'Relevé du composé polaire',
+						type: 'teneur',
+						default_value_content: '',
+						max_orange_content: 20,
+						max_rouge_content: 22,
+					}
+				],
+			},
+			{
+				category: 'Cuissons des produits grillés',
+				parameters: [
+					{
+						labelgroup: 'Grill 1'
+					},
+					{
+						label: 'Propreté et état du grill, spatules, grattoirs...',
+						type: 'check'
+					},
+					{
+						label: 'Température du grill',
+						type: 'temp'
+					},
+					{
+						label: 'Prise température interne du steak sur 1ère série',
+						type: 'temp',
+						default_value_content: '',
+						max_orange_content: 20,
+						max_rouge_content: 22,
+					},
+				],
+			},
+			{
+				category: 'Conservation des produits chauds',
+				parameters: [
+					{
+						label: 'Température du maintien chaud 1',
+						type: 'temp',
+						default_value_temp: null,
+						min_orange_temp: 65,
+						min_rouge_temp: 63,
+					}
+				],
+			},
+			{
+				category: 'Nettoyage du matériel',
+				parameters: [
+					{
+						label: 'Propreté plonge',
+						type: 'check'
+					},
+					{
+						label: 'Propreté coup-légume',
+						type: 'check'
+					},
+					{
+						label: 'Propreté machine à glaces',
+						type: 'check'
+					},
+					{
+						label: 'Propreté zone marinade',
+						type: 'check'
+					}
+				],
+			},
+		];
 
-        appFormulaire.component("input-group-check", InputGroupCheck);
-        appFormulaire.component("blog-post", blogPost);
-        appFormulaire.component("input-group-content-level", InputGroupContentLevel);
-        appFormulaire.component("input-group-temperature", InputGroupTemperature);
-        appFormulaire.mount('#app');
-    </script>
+		appFormulaire.component("input-group-check", InputGroupCheck);
+		appFormulaire.component("blog-post", blogPost);
+		appFormulaire.component("input-group-content-level", InputGroupContentLevel);
+		appFormulaire.component("input-group-temperature", InputGroupTemperature);
+		appFormulaire.mount('#app');
+	</script>
 </body>
 
 </html>
