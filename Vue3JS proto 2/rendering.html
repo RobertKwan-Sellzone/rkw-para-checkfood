@@ -14,7 +14,7 @@
 
 <body>
 	<div id="appLCQForm">
-		<select name="category">
+		<select name="category" v-model="pickedCateg" @change="selectCateg">
 			<option value="-undefined-">(sélectionnez une catégorie)</option>
 			<option value="CONGELS">Température des stockages surgelés</option>
 			<option value="FRIGOS">Température des stockages réfrigérés</option>
@@ -37,8 +37,8 @@
 
 	<script>
 		//CONVERSIONS.JS TESTING -- START
-		let myNewForm = buildNewForm('CONGELS');
-		console.log(myNewForm);
+		//let myNewForm = buildNewForm('CONGELS');
+		//console.log(myNewForm);
 		//CONVERSIONS.JS TESTING -- END
 
 
@@ -46,7 +46,14 @@
 			delimiters: ['%[', ']%'],
 			data() {
 				return {
-					myNewForm,
+					myNewForm: '',
+					pickedCateg: '-undefined-',
+				}
+			},
+			methods: {
+				selectCateg(){
+					this.myNewForm = buildNewForm(this.pickedCateg);
+					console.log(this.myNewForm);
 				}
 			},
 		});
@@ -67,15 +74,15 @@
 			},
 			methods: {
 				alert() {
-					if((this.picked == "none" && this.item_check.warn_NONE == "ROUGE") || this.picked == "nok") {
+					if ((this.picked == "none" && this.item_check.warn_NONE == "ROUGE") || this.picked == "nok") {
 						this.alert_msg = "Attention !";
 						this.alert_color = "red";
 					}
-					else if(this.picked == "none" && this.item_check.warn_NONE == "ORANGE") {
+					else if (this.picked == "none" && this.item_check.warn_NONE == "ORANGE") {
 						this.alert_msg = "N'oubliez pas !";
 						this.alert_color = "orange";
 					}
-					else{
+					else {
 						this.alert_msg = " ";
 					}
 				}
@@ -94,8 +101,8 @@
 
 					&nbsp;
 					<span :style="{color: alert_color}">%[alert_msg]%</span>
+					<hr>
 				</div>
-				<hr>
 			`
 		};
 
@@ -136,8 +143,9 @@
 					<p>%[item_temperature.label]%</p>
 					<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item_temperature.label" :id="item_temperature.$$$idkey">°C
 					<div :style="{color: stateColor}">%[state]%</div>
+					<hr>
 				</div>
-				   `
+			`
 		};
 
 		const ItemContentLevel = {
@@ -176,11 +184,10 @@
 					<p>%[item_content_level.label]%</p>
 					<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item_content_level.label" :id="item_content_level.$$$idkey">°C
 					<div :style="{color: stateColor}">%[state]%</div>
+					<hr>
 				</div>
-				   `
+			`
 		};
-
-		// //TODO composants ItemCheck, ItemTemperature, ItemContentLevel
 
 		appLCQForm.component("check", ItemCheck);
 		appLCQForm.component("temperature", ItemTemperature);
