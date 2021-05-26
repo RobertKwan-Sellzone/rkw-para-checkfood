@@ -25,12 +25,12 @@
             <div v-for="(formulaire, index) in formulaires" :key="formulaire.category">
                 <h1 class="display-6"> %[formulaire.category]% </h1>
                 <div v-for="parameter in formulaire.parameters" :key="formulaire.parameter">
-                    <h4> %[parameter.labelgroup]% </h4>
+                    <!--    <h4> %[parameter.labelgroup]% </h4>
                     <blockquote class="blockquote">
                         <p> %[ parameter.label ]% </p>
                     </blockquote>
 
-                     <div v-if="parameter.type === 'check' ">
+                    <div v-if="parameter.type === 'check' ">
                         <input-group-check :increment="index" :idcheck="parameter.label"></input-group-check>
                     </div>
 
@@ -39,7 +39,7 @@
                             :idtemperature="index" :maxrouge="parameter.max_rouge_temp"
                             :minrouge="parameter.min_rouge_temp" :maxorange="parameter.max_orange_temp"
                             :minorange="parameter.min_orange_temp" :idlabel="parameter.label">
-                        </input-group-temperature> lov : %[parameter.default_value_temp]% 
+                        </input-group-temperature> lov : %[parameter.default_value_temp]%
                     </div>
 
                     <div v-else-if="parameter.type === 'teneur' ">
@@ -48,15 +48,24 @@
                             :maxorange="parameter.max_orange_content" :idlabel="parameter.label">
                         </input-group-content-level>
 
+                    </div> -->
+
+                    <div v-if="parameter.type === 'temp' ">
+                        <input-group-temperature v-model:initialtemp="parameter.default_value_temp"
+                            :temperature="parameter">
+                        </input-group-temperature> lov : %[parameter.default_value_temp]%
                     </div>
+
+                </div>
+                <hr>
+            </div>
         </div>
-        <hr>
-    </div>
-    </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { LCQ_FORMS } from './LCQ-definitions.js';
 
+        let oui = LCQ_FORMS;
 
         const appFormulaire = Vue.createApp({
             delimiters: ['%[', ']%'],
@@ -72,11 +81,13 @@
             {
                 id: 1,
                 title: 'Mon initiation avec Vue',
-                max_ORANGE: 50
+                max_ORANGE: 50,
+                type: 'temp'
             },
             {
                 id: 2,
-                title: 'Ma vie de patate'
+                title: 'Ma vie de patate',
+                type: 'check'
             }
         ];
 
@@ -85,13 +96,16 @@
             props: {
                 post: {
                     type: Object,
-                    id: Number,
-                    title: String,
-                    max_ORANGE: Number
                 }
             },
+            data() {
+                return {
+                    truc: this.post.id * 10
+                };
+            },
             template: `
-                <h1 :id="post.id">%[post.id]%. %[ post.title ]% vaut %[post.max_ORANGE]%</h1>
+                <h1 :id="post.id">%[post.id]%. %[ post.title ]% vaut %[post.max_ORANGE]% est de type %[post.type]%</h1>
+                <p>%[truc]%</p>
             `
         }
 
@@ -118,7 +132,7 @@
                         </div>
                     </div>
             `
-        };//<p>Choisi : {{selectedDesign}}</p>             
+        };//<p>Choisi : {{selectedDesign}}</p>
 
 
         const InputGroupContentLevel = {
@@ -171,12 +185,18 @@
         };
 
         const InputGroupTemperature = {
-            props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange', 'idlabel'],
+            //props: ['initialtemp', 'idtemperature', 'maxrouge', 'minrouge', 'maxorange', 'minorange', 'idlabel'],
+            props: {
+                temperature: {
+                    type: Object,
+                },
+                initialtemp: String,
+            },
             emits: ['update:initialtemp',],
             data() {
                 return {
-                    idTemp: "idTemp_" + this.idlabel + "_" + this.idtemperature,
-                    currentTemp: '',
+                    idTemp: "idTemp_" + this.temperature.label + "_" + this.idtemperature,
+                    currentTemp: Number,
                     borderTemp: 'border border-info rounded-3',
                     imgTemp: 'assets/food.svg',
                 };
@@ -190,11 +210,11 @@
                         this.imgTemp = 'assets/food.svg';
                         this.borderTemp = 'border border-info rounded-3';
                     }
-                    else if (this.currentTemp > this.maxrouge || this.currentTemp < this.minrouge) {
+                    else if (this.currentTemp > this.temperature.max_rouge_temp || this.currentTemp < this.temperature.min_rouge_temp) {
                         this.imgTemp = 'assets/danger.svg';
                         this.borderTemp = 'border border-danger rounded-3';
                     }
-                    else if (this.currentTemp > this.maxorange || this.currentTemp < this.minorange) {
+                    else if (this.currentTemp > this.temperature.max_orange_temp || this.currentTemp < this.temperature.min_orange_temp) {
                         this.imgTemp = 'assets/warning.svg';
                         this.borderTemp = 'border border-warning rounded-3';
                     }
@@ -209,7 +229,7 @@
             template: `
                     <div class="input-group">
                         <div class="col-sm" >
-                            <input class="form-control" :class="borderTemp" type="number" step="0.1" :value="initialtemp" @input="emitValue" :id="idTemp" :name="idTemp" placeholder="Saisir la température">
+                            <input class="form-control" :class="borderTemp" type="number" step="0.1" @input="emitValue" :id="temperature.label" :name="temperature.label" placeholder="Saisir la température">
                         </div>
                         <div class="input-group-append">
                             <span class="input-group-text"> °C </span>
@@ -217,7 +237,6 @@
                         <img :src="imgTemp" style="width: 8%; height: 8%; margin-left: 8%; margin-top: auto; margin-bottom: auto;">
                     </div>
                    `
-            //                    <p>Je suis l'id : {{idTemp}}</p>
         };
 
         const formulaires = [
@@ -227,7 +246,7 @@
                     {
                         labelgroup: 'Chambre Froide -',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         max_orange_temp: -17,
                         max_rouge_temp: -15,
                         min_orange_temp: -23,
@@ -236,7 +255,7 @@
                     {
                         label: 'Armoire 1 -',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         max_orange_temp: -17,
                         max_rouge_temp: -15,
                         min_orange_temp: -23,
@@ -250,7 +269,7 @@
                     {
                         labelgroup: 'Chambre Froide +',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         max_orange_temp: 4,
                         max_rouge_temp: 7,
                         min_orange_temp: 1,
@@ -259,7 +278,7 @@
                     {
                         label: 'Armoire 1 +',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         max_orange_temp: 4,
                         max_rouge_temp: 7,
                         min_orange_temp: 1,
@@ -297,7 +316,7 @@
                     {
                         label: 'Température de programmation',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         min_orange_temp: 165,
                     },
                     {
@@ -342,7 +361,7 @@
                     {
                         label: 'Température du maintien chaud 1',
                         type: 'temp',
-                        default_value_temp: '',
+                        default_value_temp: null,
                         min_orange_temp: 65,
                         min_rouge_temp: 63,
                     }
@@ -372,7 +391,7 @@
         ];
 
         appFormulaire.component("input-group-check", InputGroupCheck);
-        appFormulaire.component("blog-post", blogPost);        
+        appFormulaire.component("blog-post", blogPost);
         appFormulaire.component("input-group-content-level", InputGroupContentLevel);
         appFormulaire.component("input-group-temperature", InputGroupTemperature);
         appFormulaire.mount('#app');
