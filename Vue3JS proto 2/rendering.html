@@ -10,37 +10,13 @@
 	<script src="./conversions.js"></script>
 
 
-</head>
-
-<body>
-	<div id="appLCQForm">
-		<select name="category" v-model="pickedCateg" @change="selectCateg">
-			<option value="-undefined-">(sélectionnez une catégorie)</option>
-			<option value="CONGELS">Température des stockages surgelés</option>
-			<option value="FRIGOS">Température des stockages réfrigérés</option>
-			<option value="DLCS">Conservation des produits</option>
-			<option value="HUILES">Huiles de cuisson</option>
-			<option value="GRILLS">Cuissons des produits grillés</option>
-			<option value="CHAUFFE">Conservation des produits chauds</option>
-			<option value="NETTOYAGE">Nettoyage du matériel</option>
-		</select>
-
-		<div>
-			<h1>%[myNewForm.formLabel]%</h1>
-			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
-				<temperature :item_temperature="item"></temperature>
-				<content-level :item_content_level="item"></content-level>
-				<check :item_check="item"></check>
-			</div>
-		</div>
-	</div>
-
-	<script>
+	<script>	
 		//CONVERSIONS.JS TESTING -- START
 		//let myNewForm = buildNewForm('CONGELS');
 		//console.log(myNewForm);
 		//CONVERSIONS.JS TESTING -- END
 
+		const
 
 		const appLCQForm = Vue.createApp({
 			delimiters: ['%[', ']%'],
@@ -73,12 +49,32 @@
 				};
 			},
 			methods: {
-				alert() {
-					if ((this.picked == "none" && this.item_check.warn_NONE == "ROUGE") || this.picked == "nok") {
+				itemChanged() {
+					let alert_lvl =
+					this.value = ItemCheckOK.NONE;
+					this.nok_warnLvl = nok_warnLvl ? nok_warnLvl : AbstractItem.ALERT_GREEN;
+					this.none_warnLvl = none_warnLvl ? none_warnLvl : AbstractItem.ALERT_GREEN;
+				}
+				
+				withPhotos() { this.withPhotos = true; return this; };
+
+				validate() {
+					switch (this.value) {
+						case ItemCheckOK.OK: return AbstractItem.ALERT_GREEN;
+						case ItemCheckOK.KO: return this.nok_warnLvl;
+						case ItemCheckOK.NONE: return this.none_warnLvl;
+					}
+				}
+				
+					if ((this.picked == "none" && this.item_check.warn_NONE)
+						
+					 || (this.picked == "nok"  && this.item_check.warn_NOK == "ROUGE")) {
 						this.alert_msg = "Attention !";
 						this.alert_color = "red";
 					}
-					else if (this.picked == "none" && this.item_check.warn_NONE == "ORANGE") {
+					else if (this.picked == "none" && this.item_check.warn_NONE == "ORANGE")
+					 ||(this.picked == "none" && this.item_check.warn_NONE == "ORANGE")					{
+					
 						this.alert_msg = "N'oubliez pas !";
 						this.alert_color = "orange";
 					}
@@ -90,13 +86,13 @@
 			template: `
 				<div v-if="item_check.type === 'check' ">
 					<p>%[item_check.label]%</p>
-					<input type="radio" :id="'ok_' +item_check.$$$idkey" value="ok" v-model="picked" @change="alert"/>
+					<input type="radio" :id="'ok_' +item_check.$$$idkey" value="ok" v-model="picked" @change="itemChanged"/>
 					<label :for="'ok_' + item_check.$$$idkey">Fait</label>
 
-					<input type="radio" :id="'nok_' + item_check.$$$idkey" value="nok" v-model="picked" @change="alert"/>
+					<input type="radio" :id="'nok_' + item_check.$$$idkey" value="nok" v-model="picked" @change="itemChanged"/>
 					<label :for="'nok_' + item_check.$$$idkey">Pas fait</label>
 
-					<input type="radio" :id="'none_' + item_check.$$$idkey" value="none" v-model="picked" @change="alert"/>
+					<input type="radio" :id="'none_' + item_check.$$$idkey" value="none" v-model="picked" @change="itemChanged"/>
 					<label :for="'none_' + item_check.$$$idkey">Pas encore fait</label>
 
 					&nbsp;
@@ -194,6 +190,31 @@
 		appLCQForm.component("content-level", ItemContentLevel);
 		appLCQForm.mount('#appLCQForm');
 	</script>
+
+</head>
+
+<body>
+	<div id="appLCQForm">
+		<select name="category" v-model="pickedCateg" @change="selectCateg">
+			<option value="-undefined-">(sélectionnez une catégorie)</option>
+			<option value="CONGELS">Température des stockages surgelés</option>
+			<option value="FRIGOS">Température des stockages réfrigérés</option>
+			<option value="DLCS">Conservation des produits</option>
+			<option value="HUILES">Huiles de cuisson</option>
+			<option value="GRILLS">Cuissons des produits grillés</option>
+			<option value="CHAUFFE">Conservation des produits chauds</option>
+			<option value="NETTOYAGE">Nettoyage du matériel</option>
+		</select>
+
+		<div>
+			<h1>%[myNewForm.formLabel]%</h1>
+			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
+				<temperature :item_temperature="item"></temperature>
+				<content-level :item_content_level="item"></content-level>
+				<check :item_check="item"></check>
+			</div>
+		</div>
+	</div>
 
 	<body>
 

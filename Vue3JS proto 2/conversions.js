@@ -22,6 +22,14 @@ var COUNTER_$$$idkey = 0;
 
 
 function injectVueProperties(form){
+	if (form.reportDate){
+		//resolve ISO date string to Date obj
+		form.reportDate = new Date(form.reportDate);
+	} else {
+		//init to now()
+		form.reportDate = new Date();
+	}
+	
 	for (let i=0; i<form.items.length; i++){
 		let item = form.items[i];
 		_injectVueProperties_item(item);
