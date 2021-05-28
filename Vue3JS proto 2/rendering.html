@@ -9,21 +9,50 @@
 	<script src="./LCQ-definitions.js"></script>
 	<script src="./conversions.js"></script>
 
+	<style>
+		.itemComponent {
+			border: 3px outset rgb(157, 129, 194);
+			border-radius: 8%;
+		}
+
+		.itemGroupComponent {
+			border: 12px solid rgb(86, 107, 106);
+		}
+
+		.itemGroupComponent.ALERTE_VERTE {
+			border-color: green;
+		}
+
+		.itemGroupComponent.ALERTE_ORANGE {
+			border-color: orange;
+		}
+
+		.itemGroupComponent.ALERTE_ROUGE {
+			border-color: red;
+		}
+
+		.itemComponent.ALERTE_VERTE {
+			background: green;
+		}
+
+		.itemComponent.ALERTE_ORANGE {
+			background: orange;
+		}
+
+		.itemComponent.ALERTE_ROUGE {
+			background: red;
+		}
+	</style>
+
 </head>
 
 <body>
 	<div id="appLCQForm">
 		<select name="category" v-model="pickedCateg" @change="selectCateg">
 			<option value="-undefined-">(sélectionnez une catégorie)</option>
-			<option value="CONGELS">Température des stockages surgelés</option>
-			<option value="FRIGOS">Température des stockages réfrigérés</option>
-			<option value="DLCS">Conservation des produits</option>
-			<option value="HUILES">Huiles de cuisson</option>
-			<option value="GRILLS">Cuissons des produits grillés</option>
-			<option value="CHAUFFE">Conservation des produits chauds</option>
-			<option value="NETTOYAGE">Nettoyage du matériel</option>
+			<option v-for="form in forms" :value="form.category">%[form.formLabel]%</option>
 		</select>
-
+		<button @click="NON">ETAT</button>
 		<div>
 			<h1>%[myNewForm.formLabel]%</h1>
 			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
@@ -33,156 +62,198 @@
 		</div>
 	</div>
 
-	<body>
+	<script>
+		//CONVERSIONS.JS TESTING -- START
+		//let myNewForm = buildNewForm('CONGELS');
+		//console.log(myNewForm);
+		//CONVERSIONS.JS TESTING -- END
 
-		<script>
-			//CONVERSIONS.JS TESTING -- START
-			//let myNewForm = buildNewForm('CONGELS');
-			//console.log(myNewForm);
-			//CONVERSIONS.JS TESTING -- END
+		var ALERTE_VERTE = "ALERTE_VERTE";
+		var ALERTE_ORANGE = "ALERTE_ORANGE";
+		var ALERTE_ROUGE = "ALERTE_ROUGE";
 
-			var ALERTE_VERTE = "ALERTE_VERTE";
-			var ALERTE_ORANGE = "ALERTE_ORANGE";
-			var ALERTE_ROUGE = "ALERTE_ROUGE";
+		const appLCQForm = Vue.createApp({
+			delimiters: ['%[', ']%'],
+			data() {
+				return {
+					myNewForm: '',
+					pickedCateg: '-undefined-',
+					forms: LCQ_FORMS,
+				}
+			},
+			methods: {
+				selectCateg() {
+					if (this.pickedCateg == '-undefined-') { this.myNewForm = ''; }
+					else { this.myNewForm = buildNewForm(this.pickedCateg); }
+					console.log(this.myNewForm);
+				},
+				NON(){
+					console.log(this.myNewForm);
+				}
+			},
+		});
 
-			const appLCQForm = Vue.createApp({
-				delimiters: ['%[', ']%'],
-				data() {
-					return {
-						myNewForm: '',
-						pickedCateg: '-undefined-',
-					}
-				},
-				methods: {
-					selectCateg() {
-						this.myNewForm = buildNewForm(this.pickedCateg);
-						console.log(this.myNewForm);
-					}
-				},
-			});
+		const ItemCheck = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				}
+			},
+			data() {
+				return {
+					picked: String,
+					alert_lvl: '',
+				};
+			},
+			methods: {
+				itemChanged() {
 
-			const ItemCheck = {
-				delimiters: ['%[', ']%'],
-				props: {
-					item: {
-						type: Object,
-					}
-				},
-				data() {
-					return {
-						picked: String,
-						alert_lvl: '',
-					};
-				},
-				methods: {
-					itemChanged() {
-
-						if (this.picked == "none" && this.item.warn_NONE) {
-							this.alert_lvl = this.item.warn_NONE;
-						}
-						else if (this.picked == "nok" && this.item.warn_NOK) {
-							this.alert_lvl = this.item.warn_NOK;
-						}
-						else {
-							this.alert_lvl = '';
-						}
-					}
-				},
-				template: `
-					<div :class="alert_lvl" >
+					this.item.alert_lvl = this.alert_lvl;
+					this.$emit('itemChange');
+				}
+			},
+			template: `
+					<div :class="alert_lvl" class="itemComponent">
 						<p>%[item.label]%</p>
-						<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="picked" @change="itemChanged"/>
+						<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.$$$value" @change="itemChanged"/>
 						<label :for="'ok_' + item.$$$idkey">Fait</label>
 
-						<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="picked" @change="itemChanged"/>
+						<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.$$$value" @change="itemChanged"/>
 						<label :for="'nok_' + item.$$$idkey">Pas fait</label>
 
-						<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="picked" @change="itemChanged"/>
+						<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.$$$value" @change="itemChanged"/>
 						<label :for="'none_' + item.$$$idkey">Pas encore fait</label>
 					</div>
 				`
-			};
+		};
 
-			const ItemTemperature = {
-				delimiters: ['%[', ']%'],
-				props: {
-					item: {
-						type: Object,
-					},
+		const ItemTemperature = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
 				},
-				data() {
-					return {
-						value: Number,
-						alert_lvl: '',
-					};
-				},
-				methods: {
-					compareValue(event) {
-						this.value = event.target.value;
+			},
+			data() {
+				return {
+					alert_lvl: '',
+				};
+			},
+			methods: {
+				itemChanged(event) {
 
-						if (this.value > this.item.max_ROUGE || this.value < this.item.min_ROUGE) {
-							this.alert_lvl = ALERTE_ROUGE;
-						}
-						else if (this.value > this.item.max_ORANGE || this.value < this.item.min_ORANGE) {
-							this.alert_lvl = ALERTE_ORANGE;
-						}
-						else {
-							this.alert_lvl = ALERTE_VERTE;
-						}
+					if (this.item.$$$value > this.item.max_ROUGE || this.item.$$$value < this.item.min_ROUGE) {
+						this.alert_lvl = ALERTE_ROUGE;
 					}
-				},
-				template: `
-					<div :class="alert_lvl">
+					else if (this.item.$$$value > this.item.max_ORANGE || this.item.$$$value < this.item.min_ORANGE) {
+						this.alert_lvl = ALERTE_ORANGE;
+					}
+					else {
+						this.alert_lvl = ALERTE_VERTE;
+					}
+					this.item.alert_lvl = this.alert_lvl;
+					this.$emit('itemChange');
+				}
+			},
+			template: `
+					<div :class="alert_lvl" class="itemComponent">
 						<p>%[item.label]%</p>
-						<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item.label">°C
-						<p>%[alert_lvl]%</p>
-						<hr>
+						<input type="number" step="0.1" @input="itemChanged" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">°C
 					</div>
 				`
-			};
-/*
-			const ItemContentLevel = {
-				delimiters: ['%[', ']%'],
-				props: {
-					item: {
-						type: Object,
-					},
+		};
+
+		const ItemContentLevel = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
 				},
-				data() {
-					return {
-						value: Number,
-						compare_cnt_lvl: '',
-					};
-				},
-				methods: {
-					compareValue(event) {
-						this.value = event.target.value;
-						if (this.value > this.item.max_ROUGE) {
-							this.compare_cnt_lvl = ALERT_ROUGE;
-						}
-						else if (this.value > this.item.max_ORANGE) {
-							this.compare_cnt_lvl = ALERTE_ORANGE;
-						}
-						else {
-							this.compare_cnt_lvl = ALERTE_VERTE;
-						}
+			},
+			data() {
+				return {
+					alert_lvl: '',
+				};
+			},
+			methods: {
+				itemChanged(event) {
+
+					if (this.item.$$$value > this.item.max_ROUGE) {
+						this.alert_lvl = ALERTE_ROUGE;
 					}
-				},
-				template: `
-					<div>
+					else if (this.item.$$$value > this.item.max_ORANGE) {
+						this.alert_lvl = ALERTE_ORANGE;
+					}
+					else {
+						this.alert_lvl = ALERTE_VERTE;
+					}
+					this.item.alert_lvl = this.alert_lvl;
+					this.$emit('itemChange');
+				}
+			},
+			template: `
+					<div :class="alert_lvl" class="itemComponent">
 						<p>%[item.label]%</p>
-						<input type="number" step="0.1" @input="compareValue" placeholder="Saisir la température" :name="item.label" :id="item.$$$idkey">°C
-						<p>%[compare_cnt_lvl]%</p>
-						<hr>
+						<input type="number" step="0.1" @input="itemChanged" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">%
 					</div>
 				`
-			};
-*/
+		};
 
-			appLCQForm.component("check", ItemCheck);
-			appLCQForm.component("temperature", ItemTemperature);
-			//appLCQForm.component("content-level", ItemContentLevel);
-			appLCQForm.mount('#appLCQForm');
-		</script>
+		const ItemRepeatGroup = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			template: `
+					<component :is="item.itemBase.type" :item="item.itemBase"></component>
+				`
+		};
+
+		const ItemCompoundGroup = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			data() {
+				return {
+					alert_lvl: '',
+				}
+			},
+			methods: {
+				bol() {
+					console.log("oui");
+					for (let i = 0; i < this.item.items.length; i++) {
+						let subItem = this.item.items;
+						this.alert_lvl = subItem.alert_lvl;
+					} console.log(this.alert_lvl);
+
+				}
+			},
+			template: `
+					<div :class="alert_lvl" class="itemGroupComponent" >
+						<p>%[item.label]%</p>
+						<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+							<component :is="subItem.type" :item="subItem" @item-change="bol"></component>
+						</div>
+					</div>
+				`
+		};
+
+		appLCQForm.component("check", ItemCheck);
+		appLCQForm.component("temperature", ItemTemperature);
+		appLCQForm.component("contentLevel", ItemContentLevel);
+		appLCQForm.component("repeatGroup", ItemRepeatGroup);
+		appLCQForm.component("compoundGroup", ItemCompoundGroup);
+		appLCQForm.mount('#appLCQForm');
+	</script>
+
+</body>
+
+
 
 </html>

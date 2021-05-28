@@ -1,7 +1,7 @@
-function buildNewForm(categ){
+function buildNewForm(categ) {
 	let originalForm;
-	for (let i=0; i<LCQ_FORMS.length; i++){
-		if (LCQ_FORMS[i].category == categ){
+	for (let i = 0; i < LCQ_FORMS.length; i++) {
+		if (LCQ_FORMS[i].category == categ) {
 			originalForm = LCQ_FORMS[i];
 		}
 	}
@@ -17,45 +17,57 @@ function buildNewForm(categ){
 	return copyForm;
 }
 
+function assess(item) {
+	if (item.$$$value == "none" && this.item.warn_NONE) {
+		this.alert_lvl = this.item.warn_NONE;
+	}
+	else if (this.item.$$$value == "nok" && this.item.warn_NOK) {
+		this.alert_lvl = this.item.warn_NOK;
+	}
+	else {
+		this.alert_lvl = '';
+	}
+}
+
 
 var COUNTER_$$$idkey = 0;
 
 
-function injectVueProperties(form){
-	if (form.reportDate){
+function injectVueProperties(form) {
+	if (form.reportDate) {
 		//resolve ISO date string to Date obj
 		form.reportDate = new Date(form.reportDate);
 	} else {
 		//init to now()
 		form.reportDate = new Date();
 	}
-	
-	for (let i=0; i<form.items.length; i++){
+
+	for (let i = 0; i < form.items.length; i++) {
 		let item = form.items[i];
 		_injectVueProperties_item(item);
 	}
 }
 
-function _injectVueProperties_item(item){
+function _injectVueProperties_item(item) {
 	item.$$$idkey = COUNTER_$$$idkey++;
 
-	switch(item.type){
+	switch (item.type) {
 		case 'check':
 		case 'temperature':
-		case 'contentLevel':{
+		case 'contentLevel': {
 			item.$$$value = null;
 			break;
 		}
 		case 'repeatGroup':
 			_injectVueProperties_item(item.itemBase);
-			//fallthrough
-		case 'compoundGroup':{
+		//fallthrough
+		case 'compoundGroup': {
 			// init items in containers
-			if (!Array.isArray(item.items)){
+			if (!Array.isArray(item.items)) {
 				item.items = [];
 			}
 			// walk container tree
-			for (let i=0; i<item.items.length; i++){
+			for (let i = 0; i < item.items.length; i++) {
 				let subItem = item.items[i];
 				_injectVueProperties_item(subItem);
 			}
@@ -65,7 +77,7 @@ function _injectVueProperties_item(item){
 }
 
 
-function extractVueProperties(form){
+function extractVueProperties(form) {
 	//TODO faire l'inverse de injectVueProperties
 	// càd enlever les trucs ajoutés
 
