@@ -50,11 +50,17 @@ function _itemCheck_alertLvl(){
 		return '';
 	}
 }
-function _itemTemperature_alertLvl(){
-	return "ALERTE_CYAN";
-}
-function _itemContentLevel_alertLvl(){
-	return "ALERTE_MAGENTA";
+function _itemNumeric_alertLvl(){
+
+	if (this.$$$value > this.max_ROUGE || this.$$$value < this.min_ROUGE) {
+		return ALERTE_ROUGE;
+	}
+	else if (this.$$$value > this.max_ORANGE || this.$$$value < this.min_ORANGE) {
+		return ALERTE_ORANGE;
+	}
+	else {
+		return ALERTE_VERTE;
+	}
 }
 
 
@@ -91,10 +97,10 @@ function _injectVueProperties_item(item) {
 			item.alertLvl = _itemCheck_alertLvl;
 			break;
 		case 'temperature':
-			item.alertLvl = _itemTemperature_alertLvl;
+			item.alertLvl = _itemNumeric_alertLvl;
 			break;
 		case 'contentLevel':
-			item.alertLvl = _itemContentLevel_alertLvl;
+			item.alertLvl = _itemNumeric_alertLvl;
 			break;
 	}
 

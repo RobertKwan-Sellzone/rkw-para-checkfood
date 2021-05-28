@@ -1,3 +1,7 @@
+const ALERTE_VERTE = "ALERTE_VERTE";
+const ALERTE_ORANGE = "ALERTE_ORANGE";
+const ALERTE_ROUGE = "ALERTE_ROUGE";
+
 const LCQ_FORMS = [
 	{
 		category: 'PATATE',
