@@ -17,17 +17,7 @@ function buildNewForm(categ) {
 	return copyForm;
 }
 
-function assess(item) {
-	if (item.$$$value == "none" && this.item.warn_NONE) {
-		this.alert_lvl = this.item.warn_NONE;
-	}
-	else if (this.item.$$$value == "nok" && this.item.warn_NOK) {
-		this.alert_lvl = this.item.warn_NOK;
-	}
-	else {
-		this.alert_lvl = '';
-	}
-}
+
 
 
 var COUNTER_$$$idkey = 0;
@@ -47,6 +37,26 @@ function injectVueProperties(form) {
 		_injectVueProperties_item(item);
 	}
 }
+
+
+function _itemCheck_alertLvl(){
+	if (this.$$$value == "none" && this.warn_NONE) {
+		return this.warn_NONE;
+	}
+	else if (this.$$$value == "nok" && this.warn_NOK) {
+		return this.warn_NOK;
+	}
+	else {
+		return '';
+	}
+}
+function _itemTemperature_alertLvl(){
+	return "ALERTE_CYAN";
+}
+function _itemContentLevel_alertLvl(){
+	return "ALERTE_MAGENTA";
+}
+
 
 function _injectVueProperties_item(item) {
 	item.$$$idkey = COUNTER_$$$idkey++;
@@ -74,6 +84,20 @@ function _injectVueProperties_item(item) {
 			break;
 		}
 	}
+
+	// inject computed alertLvl
+	switch (item.type) {
+		case 'check':
+			item.alertLvl = _itemCheck_alertLvl;
+			break;
+		case 'temperature':
+			item.alertLvl = _itemTemperature_alertLvl;
+			break;
+		case 'contentLevel':
+			item.alertLvl = _itemContentLevel_alertLvl;
+			break;
+	}
+
 }
 
 
