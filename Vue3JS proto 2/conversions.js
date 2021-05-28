@@ -50,8 +50,8 @@ function _itemCheck_alertLvl(){
 		return '';
 	}
 }
-function _itemNumeric_alertLvl(){
 
+function _itemNumeric_alertLvl(){
 	if (this.$$$value > this.max_ROUGE || this.$$$value < this.min_ROUGE) {
 		return ALERTE_ROUGE;
 	}
@@ -61,6 +61,30 @@ function _itemNumeric_alertLvl(){
 	else {
 		return ALERTE_VERTE;
 	}
+}
+
+function _itemGroup_alertLvl(){
+	function alerte2num(al){
+		switch(al){
+			case ALERTE_ROUGE: return 2;
+			case ALERTE_ORANGE: return 1;
+			case ALERTE_VERTE: default: return 0;
+		}
+	}
+	function num2alerte(num){
+		switch(num){
+			case 2: return ALERTE_ROUGE;
+			case 1: return ALERTE_ORANGE;
+			case 0: default: return ALERTE_VERTE;
+		}
+	}
+
+	// the group takes the most severe level of all sub items'
+	return num2alerte(this.items
+		.map(subItem => subItem.alertLvl())
+		.map(alerte2num)
+		.reduce((a,b)=>(a>b?a:b), 0) // a workaround to .reduce(Math.max, 0) not working
+	);
 }
 
 
@@ -93,15 +117,11 @@ function _injectVueProperties_item(item) {
 
 	// inject computed alertLvl
 	switch (item.type) {
-		case 'check':
-			item.alertLvl = _itemCheck_alertLvl;
-			break;
-		case 'temperature':
-			item.alertLvl = _itemNumeric_alertLvl;
-			break;
-		case 'contentLevel':
-			item.alertLvl = _itemNumeric_alertLvl;
-			break;
+		case 'check':         item.alertLvl = _itemCheck_alertLvl; break;
+		case 'temperature':	  item.alertLvl = _itemNumeric_alertLvl; break;
+		case 'contentLevel':  item.alertLvl = _itemNumeric_alertLvl; break;
+		case 'repeatGroup':   item.alertLvl = _itemGroup_alertLvl; break;
+		case 'compoundGroup': item.alertLvl = _itemGroup_alertLvl; break;
 	}
 
 }

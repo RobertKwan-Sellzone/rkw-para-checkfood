@@ -164,17 +164,6 @@
 			},
 			methods: {
 				itemChanged(event) {
-
-					if (this.item.$$$value > this.item.max_ROUGE) {
-						this.alert_lvl = ALERTE_ROUGE;
-					}
-					else if (this.item.$$$value > this.item.max_ORANGE) {
-						this.alert_lvl = ALERTE_ORANGE;
-					}
-					else {
-						this.alert_lvl = ALERTE_VERTE;
-					}
-					this.item.alert_lvl = this.alert_lvl;
 					this.$emit('itemChange');
 				}
 			},
