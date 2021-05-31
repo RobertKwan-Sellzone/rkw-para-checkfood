@@ -47,7 +47,7 @@ function _itemCheck_alertLvl(){
 		return this.warn_NOK;
 	}
 	else {
-		return '';
+		return ALERTE_VERTE;
 	}
 }
 

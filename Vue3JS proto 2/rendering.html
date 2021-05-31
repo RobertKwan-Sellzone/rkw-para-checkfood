@@ -105,8 +105,7 @@
 			},
 			methods: {
 				itemChanged() {
-
-					this.item.alert_lvl = this.alert_lvl;
+					this.alert_lvl = this.item.alertLvl();
 					this.$emit('itemChange');
 				}
 			},
