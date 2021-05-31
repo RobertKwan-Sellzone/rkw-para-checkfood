@@ -1,9 +1,12 @@
-const ALERTE_VERTE = "ALERTE_VERTE";
-const ALERTE_ORANGE = "ALERTE_ORANGE";
-const ALERTE_ROUGE = "ALERTE_ROUGE";
+const ALERTE_VERTE = 'ALERTE_VERTE';
+const ALERTE_ORANGE = 'ALERTE_ORANGE';
+const ALERTE_ROUGE = 'ALERTE_ROUGE';
+//TODO utiliser les constantes pour définir les valeurs de warn_NOK et warn_NONE
+//TODO déplacer ici les définitions des valeurs calculées (ex. alertLvl) ?...
 
 const LCQ_FORMS = [
 	{
+		//TODO clean PATATE after tests
 		category: 'PATATE',
 		formLabel: 'Patate de luxe',
 		items: [

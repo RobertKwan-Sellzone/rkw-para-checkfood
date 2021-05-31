@@ -115,7 +115,7 @@ function _injectVueProperties_item(item) {
 		}
 	}
 
-	// inject computed alertLvl
+	// inject computed "alertLvl"
 	switch (item.type) {
 		case 'check':         item.alertLvl = _itemCheck_alertLvl; break;
 		case 'temperature':	  item.alertLvl = _itemNumeric_alertLvl; break;
