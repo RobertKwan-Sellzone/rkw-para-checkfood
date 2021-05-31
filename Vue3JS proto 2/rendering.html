@@ -84,7 +84,7 @@
 					else { this.myNewForm = buildNewForm(this.pickedCateg); }
 					console.log(this.myNewForm);
 				},
-				NON(){
+				NON() {
 					console.log(this.myNewForm);
 				}
 			},
@@ -97,30 +97,23 @@
 					type: Object,
 				}
 			},
-			data() {
-				return {
-					picked: String,
-					alert_lvl: '',
-				};
-			},
-			methods: {
-				itemChanged() {
-					this.alert_lvl = this.item.alertLvl();
-					this.$emit('itemChange');
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
 				}
 			},
 			template: `
-					<div :class="alert_lvl" class="itemComponent">
-						<p>%[item.label]%</p>
-						<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.$$$value" @change="itemChanged"/>
-						<label :for="'ok_' + item.$$$idkey">Fait</label>
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.$$$value" />
+					<label :for="'ok_' + item.$$$idkey">Fait</label>
 
-						<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.$$$value" @change="itemChanged"/>
-						<label :for="'nok_' + item.$$$idkey">Pas fait</label>
+					<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.$$$value" />
+					<label :for="'nok_' + item.$$$idkey">Pas fait</label>
 
-						<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.$$$value" @change="itemChanged"/>
-						<label :for="'none_' + item.$$$idkey">Pas encore fait</label>
-					</div>
+					<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.$$$value" />
+					<label :for="'none_' + item.$$$idkey">Pas encore fait</label>
+				</div>
 				`
 		};
 
@@ -131,22 +124,16 @@
 					type: Object,
 				},
 			},
-			data() {
-				return {
-					alert_lvl: '',
-				};
-			},
-			methods: {
-				itemChanged(event) {
-					this.alert_lvl = this.item.alertLvl();
-					this.$emit('itemChange');
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
 				}
 			},
 			template: `
-					<div :class="alert_lvl" class="itemComponent">
-						<p>%[item.label]%</p>
-						<input type="number" step="0.1" @input="itemChanged" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">°C
-					</div>
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="number" step="0.1" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">°C
+				</div>
 				`
 		};
 
@@ -157,22 +144,16 @@
 					type: Object,
 				},
 			},
-			data() {
-				return {
-					alert_lvl: '',
-				};
-			},
-			methods: {
-				itemChanged(event) {
-					this.alert_lvl = this.item.alertLvl();
-					this.$emit('itemChange');
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
 				}
 			},
 			template: `
-					<div :class="alert_lvl" class="itemComponent">
-						<p>%[item.label]%</p>
-						<input type="number" step="0.1" @input="itemChanged" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">%
-					</div>
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="number" step="0.1" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">%
+				</div>
 				`
 		};
 
@@ -183,21 +164,30 @@
 					type: Object,
 				},
 			},
-			data() {
-				return {
-					alert_lvl: '',
+			methods: {
+				addNewItem() {
+					let copyItem = JSON.parse(JSON.stringify(this.item.itemBase));
+					injectVueProperties_item(copyItem);
+
+					this.item.items.push(copyItem);
+				},
+				removeItem() {
+					this.item.items.pop();
 				}
 			},
-			methods: {
-				bol() {
-					console.log("oui");
-					this.alert_lvl = this.item.alertLvl();
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
 				}
 			},
 			template: `
-					<div :class="alert_lvl" class="itemGroupComponent" >
-						<component :is="item.itemBase.type" :item="item.itemBase"></component>
+				<div :class="alertLevel" class="itemGroupComponent" >
+					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+						<component :is="subItem.type" :item="subItem"></component>
 					</div>
+					<button @click="addNewItem">Ajouter</button>
+					<button @click="removeItem">Supprimer</button>
+				</div>
 				`
 		};
 
@@ -208,24 +198,18 @@
 					type: Object,
 				},
 			},
-			data() {
-				return {
-					alert_lvl: '',
-				}
-			},
-			methods: {
-				bol() {
-					console.log("oui");
-					this.alert_lvl = this.item.alertLvl();
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
 				}
 			},
 			template: `
-					<div :class="alert_lvl" class="itemGroupComponent" >
-						<p>%[item.label]%</p>
-						<div v-for="subItem in item.items" :key="subItem.$$$idkey">
-							<component :is="subItem.type" :item="subItem" @item-change="bol"></component>
-						</div>
+				<div :class="alertLevel" class="itemGroupComponent" >
+					<p>%[item.label]%</p>
+					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+						<component :is="subItem.type" :item="subItem"></component>
 					</div>
+				</div>
 				`
 		};
 

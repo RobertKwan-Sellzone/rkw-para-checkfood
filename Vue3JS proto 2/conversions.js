@@ -12,7 +12,7 @@ function buildNewForm(categ) {
 	let copyForm = JSON.parse(JSON.stringify(originalForm));
 
 	// add properties needed for VueJS rendering
-	injectVueProperties(copyForm);
+	injectVueProperties_form(copyForm);
 
 	return copyForm;
 }
@@ -23,7 +23,7 @@ function buildNewForm(categ) {
 var COUNTER_$$$idkey = 0;
 
 
-function injectVueProperties(form) {
+function injectVueProperties_form(form) {
 	if (form.reportDate) {
 		//resolve ISO date string to Date obj
 		form.reportDate = new Date(form.reportDate);
@@ -34,12 +34,12 @@ function injectVueProperties(form) {
 
 	for (let i = 0; i < form.items.length; i++) {
 		let item = form.items[i];
-		_injectVueProperties_item(item);
+		injectVueProperties_item(item);
 	}
 }
 
 
-function _itemCheck_alertLvl(){
+function _itemCheck_alertLvl() {
 	if (this.$$$value == "none" && this.warn_NONE) {
 		return this.warn_NONE;
 	}
@@ -51,7 +51,7 @@ function _itemCheck_alertLvl(){
 	}
 }
 
-function _itemNumeric_alertLvl(){
+function _itemNumeric_alertLvl() {
 	if (this.$$$value > this.max_ROUGE || this.$$$value < this.min_ROUGE) {
 		return ALERTE_ROUGE;
 	}
@@ -63,16 +63,16 @@ function _itemNumeric_alertLvl(){
 	}
 }
 
-function _itemGroup_alertLvl(){
-	function alerte2num(al){
-		switch(al){
+function _itemGroup_alertLvl() {
+	function alerte2num(al) {
+		switch (al) {
 			case ALERTE_ROUGE: return 2;
 			case ALERTE_ORANGE: return 1;
 			case ALERTE_VERTE: default: return 0;
 		}
 	}
-	function num2alerte(num){
-		switch(num){
+	function num2alerte(num) {
+		switch (num) {
 			case 2: return ALERTE_ROUGE;
 			case 1: return ALERTE_ORANGE;
 			case 0: default: return ALERTE_VERTE;
@@ -83,23 +83,26 @@ function _itemGroup_alertLvl(){
 	return num2alerte(this.items
 		.map(subItem => subItem.alertLvl())
 		.map(alerte2num)
-		.reduce((a,b)=>(a>b?a:b), 0) // a workaround to .reduce(Math.max, 0) not working
+		.reduce((a, b) => (a > b ? a : b), 0) // a workaround to .reduce(Math.max, 0) not working
 	);
 }
 
 
-function _injectVueProperties_item(item) {
+function injectVueProperties_item(item) {
 	item.$$$idkey = COUNTER_$$$idkey++;
 
 	switch (item.type) {
-		case 'check':
+		case 'check': {
+			item.$$$value = 'none';
+			break;
+		}
 		case 'temperature':
 		case 'contentLevel': {
 			item.$$$value = null;
 			break;
 		}
 		case 'repeatGroup':
-			_injectVueProperties_item(item.itemBase);
+			injectVueProperties_item(item.itemBase);
 		//fallthrough
 		case 'compoundGroup': {
 			// init items in containers
@@ -109,7 +112,7 @@ function _injectVueProperties_item(item) {
 			// walk container tree
 			for (let i = 0; i < item.items.length; i++) {
 				let subItem = item.items[i];
-				_injectVueProperties_item(subItem);
+				injectVueProperties_item(subItem);
 			}
 			break;
 		}
@@ -117,10 +120,10 @@ function _injectVueProperties_item(item) {
 
 	// inject computed "alertLvl"
 	switch (item.type) {
-		case 'check':         item.alertLvl = _itemCheck_alertLvl; break;
-		case 'temperature':	  item.alertLvl = _itemNumeric_alertLvl; break;
-		case 'contentLevel':  item.alertLvl = _itemNumeric_alertLvl; break;
-		case 'repeatGroup':   item.alertLvl = _itemGroup_alertLvl; break;
+		case 'check': item.alertLvl = _itemCheck_alertLvl; break;
+		case 'temperature': item.alertLvl = _itemNumeric_alertLvl; break;
+		case 'contentLevel': item.alertLvl = _itemNumeric_alertLvl; break;
+		case 'repeatGroup': item.alertLvl = _itemGroup_alertLvl; break;
 		case 'compoundGroup': item.alertLvl = _itemGroup_alertLvl; break;
 	}
 

@@ -27,6 +27,62 @@ const LCQ_FORMS = [
 					}
 				]
 			},
+			{
+				type: 'repeatGroup',
+				minCount: 1, maxCount: 10,
+				itemBase: {
+					type: 'temperature', label: 'Armoire {i} -',
+					min_ROUGE: -25, min_ORANGE: -23, max_ORANGE: -17, max_ROUGE: -15
+				},
+				items: [
+					{
+						type: 'temperature', label: 'Armoire 1 -',
+						min_ROUGE: -25, min_ORANGE: -23, max_ORANGE: -17, max_ROUGE: -15
+					},
+					{
+						type: 'temperature', label: 'Armoire 2 -',
+						min_ROUGE: -25, min_ORANGE: -23, max_ORANGE: -17, max_ROUGE: -15
+					},
+				],
+			},
+			{
+				type: 'repeatGroup',
+				minCount: 1, maxCount: 10,
+				itemBase: {
+					type: 'compoundGroup', label: 'Bac {i}',
+					items: [
+						{
+							type: 'temperature', label: 'Température de programmation',
+							min_ORANGE: 165,
+						},
+						{
+							type: 'check', label: 'Niveau d\'huile',
+							warn_NOK: 'ALERTE_ORANGE', warn_NONE: 'ALERTE_ROUGE',
+						},
+						{
+							type: 'contentLevel', label: 'Relevé du composé polaire',
+							max_ORANGE: 20, max_ROUGE: 22
+						}
+					]
+				},
+				items: [{
+					type: 'compoundGroup', label: 'Bac {i}',
+					items: [
+						{
+							type: 'temperature', label: 'Température de programmation',
+							min_ORANGE: 165,
+						},
+						{
+							type: 'check', label: 'Niveau d\'huile',
+							warn_NOK: 'ALERTE_ORANGE', warn_NONE: 'ALERTE_ROUGE',
+						},
+						{
+							type: 'contentLevel', label: 'Relevé du composé polaire',
+							max_ORANGE: 20, max_ROUGE: 22
+						}
+					]
+				},]
+			},
 		]
 	},
 	{
