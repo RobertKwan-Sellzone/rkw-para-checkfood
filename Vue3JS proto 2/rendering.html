@@ -138,6 +138,7 @@
 			},
 			methods: {
 				itemChanged(event) {
+					this.alert_lvl = this.item.alertLvl();
 					this.$emit('itemChange');
 				}
 			},
@@ -163,6 +164,7 @@
 			},
 			methods: {
 				itemChanged(event) {
+					this.alert_lvl = this.item.alertLvl();
 					this.$emit('itemChange');
 				}
 			},
@@ -181,8 +183,21 @@
 					type: Object,
 				},
 			},
+			data() {
+				return {
+					alert_lvl: '',
+				}
+			},
+			methods: {
+				bol() {
+					console.log("oui");
+					this.alert_lvl = this.item.alertLvl();
+				}
+			},
 			template: `
-					<component :is="item.itemBase.type" :item="item.itemBase"></component>
+					<div :class="alert_lvl" class="itemGroupComponent" >
+						<component :is="item.itemBase.type" :item="item.itemBase"></component>
+					</div>
 				`
 		};
 
@@ -201,11 +216,7 @@
 			methods: {
 				bol() {
 					console.log("oui");
-					for (let i = 0; i < this.item.items.length; i++) {
-						let subItem = this.item.items;
-						this.alert_lvl = subItem.alert_lvl;
-					} console.log(this.alert_lvl);
-
+					this.alert_lvl = this.item.alertLvl();
 				}
 			},
 			template: `
