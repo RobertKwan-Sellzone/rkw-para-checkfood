@@ -5,9 +5,169 @@
 	<meta charset="utf-8">
 	<title>Proto-Questionnaire VueJS v.4</title>
 
-	<script src="https://unpkg.com/vue@next"></script>
+	<script src="https://unpkg.com/vue@next" defer></script>
 	<script src="./LCQ-definitions.js"></script>
-	<script src="./conversions.js"></script>
+	<!-- script src="./conversions.js"></script -->
+	<script type="text/javascript">
+
+
+		var COUNTER_$$$idkey = 0;
+
+
+		function injectVueProperties_form(form) {
+			if (form.reportDate) {
+				//resolve ISO date string to Date obj
+				form.reportDate = new Date(form.reportDate);
+			} else {
+				//init to now()
+				form.reportDate = new Date();
+			}
+
+			for (let i = 0; i < form.items.length; i++) {
+				let item = form.items[i];
+				injectVueProperties_item(item);
+			}
+		}
+
+
+		function _itemCheck_alertLvl() {
+			if (this.mainValue == "none" && this.warn_NONE) {
+				return this.warn_NONE;
+			}
+			else if (this.mainValue == "nok" && this.warn_NOK) {
+				return this.warn_NOK;
+			}
+			else {
+				return ALERTE_VERTE;
+			}
+		}
+
+		function _itemNumeric_alertLvl() {
+			if (this.mainValue > this.max_ROUGE || this.mainValue < this.min_ROUGE) {
+				return ALERTE_ROUGE;
+			}
+			else if (this.mainValue > this.max_ORANGE || this.mainValue < this.min_ORANGE) {
+				return ALERTE_ORANGE;
+			}
+			else {
+				return ALERTE_VERTE;
+			}
+		}
+
+		function _itemGroup_alertLvl() {
+			function alerte2num(al) {
+				switch (al) {
+					case ALERTE_ROUGE: return 2;
+					case ALERTE_ORANGE: return 1;
+					case ALERTE_VERTE: default: return 0;
+				}
+			}
+			function num2alerte(num) {
+				switch (num) {
+					case 2: return ALERTE_ROUGE;
+					case 1: return ALERTE_ORANGE;
+					case 0: default: return ALERTE_VERTE;
+				}
+			}
+
+			// the group takes the most severe level of all sub items'
+			return num2alerte(this.items
+				.map(subItem => subItem.alertLvl())
+				.map(alerte2num)
+				.reduce((a, b) => (a > b ? a : b), 0) // a workaround to .reduce(Math.max, 0) not working
+			);
+		}
+
+
+		function injectVueProperties_item(item) {
+			item.$$$idkey = COUNTER_$$$idkey++;
+
+			switch (item.$$$type) {
+				case 'lcq-item-check': {
+					item.mainValue = 'none';
+					break;
+				}
+				case 'lcq-item-temperature':
+				case 'lcq-item-contentLevel': {
+					item.mainValue = null;
+					break;
+				}
+				case 'lcq-item-repeatGroup':
+					injectVueProperties_item(item.itemBase);
+				//fallthrough
+				case 'lcq-item-compoundGroup': {
+					// init items in containers
+					if (!Array.isArray(item.items)) {
+						item.items = [];
+					}
+					// walk container tree
+					for (let i = 0; i < item.items.length; i++) {
+						let subItem = item.items[i];
+						injectVueProperties_item(subItem);
+					}
+					break;
+				}
+			}
+
+			// inject computed "alertLvl"
+			switch (item.$$$type) {
+				case 'lcq-item-check': item.alertLvl = _itemCheck_alertLvl; break;
+				case 'lcq-item-temperature': item.alertLvl = _itemNumeric_alertLvl; break;
+				case 'lcq-item-contentLevel': item.alertLvl = _itemNumeric_alertLvl; break;
+				case 'lcq-item-repeatGroup': item.alertLvl = _itemGroup_alertLvl; break;
+				case 'lcq-item-compoundGroup': item.alertLvl = _itemGroup_alertLvl; break;
+			}
+
+		}
+
+
+		function buildouille() {
+
+			let originalForm = {
+				category: 'HUILES',
+				formLabel: 'Huiles de cuisse',
+				items: [
+					{
+						$$$type: 'lcq-item-repeatGroup',
+						minCount: 1, maxCount: 20,
+						itemBase: {
+							$$$type: 'lcq-item-compoundGroup', label: 'Bac {i}',
+							items: [
+								{
+									$$$type: 'lcq-item-temperature', label: 'Température de coding',
+									min_ORANGE: 165,
+								},
+								{
+									$$$type: 'lcq-item-check', label: 'Niveau d\'huile de coude',
+									warn_NOK: 'ALERTE_ORANGE', warn_NONE: 'ALERTE_ROUGE',
+								},
+								{
+									$$$type: 'lcq-item-contentLevel', label: 'Relevé du composé nordique',
+									max_ORANGE: 20, max_ROUGE: 22
+								}
+							]
+						}
+					}
+				]
+			};
+			// same as :
+			// let originalForm = LCQ_FORMS.find(form => form.category == categ);
+
+			// JSON-based deep copy
+			let copyForm = JSON.parse(JSON.stringify(originalForm));
+
+			// add properties needed for VueJS rendering
+			injectVueProperties_form(copyForm);
+
+			return copyForm;
+		}
+
+
+
+
+
+
+	</script>
 
 	<style>
 		.itemComponent {
@@ -52,22 +212,17 @@
 			<option value="-undefined-">(sélectionnez une catégorie)</option>
 			<option v-for="form in forms" :value="form.category">%[form.formLabel]%</option>
 		</select>
-		<button @click="NON">ETAT</button>
+		<button @click="showState">ETAT</button>
 		<div>
 			<h1>%[myNewForm.formLabel]%</h1>
 			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
-				<component :is="item.type" :item="item"></component>
+				<component :is="item.$$$type" :item="item"></component>
 				<hr>
 			</div>
 		</div>
 	</div>
 
-	<script>
-		//CONVERSIONS.JS TESTING -- START
-		//let myNewForm = buildNewForm('CONGELS');
-		//console.log(myNewForm);
-		//CONVERSIONS.JS TESTING -- END
-
+	<script type="module">
 
 		const appLCQForm = Vue.createApp({
 			delimiters: ['%[', ']%'],
@@ -80,17 +235,20 @@
 			},
 			methods: {
 				selectCateg() {
-					if (this.pickedCateg == '-undefined-') { this.myNewForm = ''; }
-					else { this.myNewForm = buildNewForm(this.pickedCateg); }
+					this.myNewForm = buildouille();
 					console.log(this.myNewForm);
 				},
-				NON() {
+				showState() {
 					console.log(this.myNewForm);
 				}
 			},
 		});
 
-		const ItemCheck = {
+
+
+		/* Components for Item types */
+
+		var ItemCheck = {
 			delimiters: ['%[', ']%'],
 			props: {
 				item: {
@@ -99,45 +257,32 @@
 			},
 			computed: {
 				alertLevel() {
+					//this.item.mainValue; /* <- reactivity hack = "gratuitous" access */;
 					return this.item.alertLvl();
 				}
 			},
 			template: `
-				<div :class="alertLevel" class="itemComponent">
-					<p>%[item.label]%</p>
-					<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.$$$value" />
-					<label :for="'ok_' + item.$$$idkey">Fait</label>
-
-					<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.$$$value" />
-					<label :for="'nok_' + item.$$$idkey">Pas fait</label>
-
-					<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.$$$value" />
-					<label :for="'none_' + item.$$$idkey">Pas encore fait</label>
+			<div :class="alertLevel" class="itemComponent shadow py-2 px-2 mb-2 rounded">
+			<p class="mb-2">%[item.label]%</p>
+				<div class="row g-1">
+					<div class="col">
+						<input type="radio" class="btn-check" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.mainValue" />
+						<label class="w-100 px-2 btn btn-sm btn-outline-success" :for="'ok_' + item.$$$idkey"><i class="fas fa-check fa-sm"></i> Ok</label>
+					</div>
+					<div class="col">
+						<input type="radio" class="btn-check" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.mainValue" />
+						<label class="w-100 px-2 btn btn-sm btn-outline-danger" :for="'nok_' + item.$$$idkey"><i class="fas fa-times fa-sm"></i> Pas ok</label>
+					</div>
+					<div class="col">
+						<input type="radio" class="btn-check" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.mainValue" />
+						<label class="w-100 px-2 btn btn-sm btn-outline-secondary" :for="'none_' + item.$$$idkey"><i class="fas fa-question fa-sm"></i> A faire</label>
+					</div>
 				</div>
-				`
+			</div>
+			`
 		};
 
-		const ItemTemperature = {
-			delimiters: ['%[', ']%'],
-			props: {
-				item: {
-					type: Object,
-				},
-			},
-			computed: {
-				alertLevel() {
-					return this.item.alertLvl();
-				}
-			},
-			template: `
-				<div :class="alertLevel" class="itemComponent">
-					<p>%[item.label]%</p>
-					<input type="number" step="0.1" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">°C
-				</div>
-				`
-		};
-
-		const ItemContentLevel = {
+		var ItemTemperature = {
 			delimiters: ['%[', ']%'],
 			props: {
 				item: {
@@ -146,18 +291,55 @@
 			},
 			computed: {
 				alertLevel() {
+					//this.item.mainValue; /* <- reactivity hack = "gratuitous" access */;
 					return this.item.alertLvl();
 				}
 			},
 			template: `
-				<div :class="alertLevel" class="itemComponent">
-					<p>%[item.label]%</p>
-					<input type="number" step="0.1" v-model="item.$$$value" placeholder="Saisir la température" :name="item.label">%
+			<div :class="alertLevel" class="itemComponent shadow-sm py-1 px-2 mb-2 rounded">
+				<div v-if="item.isLabelEdit" class="col-10 col-sm-5 mb-2 rounded">
+					<input type="text" class="form-control form-control-sm" v-model="item.label">
 				</div>
-				`
+				<div v-else>
+				<p class="mb-2">%[item.label]%</p>
+				</div>
+				<div class="input-group input-group-sm mb-2">
+					<div class="col-md-4">
+						<input :class="alertLevel" class="form-control form-control-sm inputComponent" type="number" step="0.1" v-model="item.mainValue" placeholder="Saisir la température" :name="item.label">
+					</div>
+					<span class="input-group-text">°C </span>
+				</div>
+			</div>
+			`
 		};
 
-		const ItemRepeatGroup = {
+		var ItemContentLevel = {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			computed: {
+				alertLevel() {
+					//this.item.mainValue; /* <- reactivity hack = "gratuitous" access */;
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+			<div :class="alertLevel" class="itemComponent rounded shadow-sm py-1 px-2 mb-2">
+				<p class="mb-2">%[item.label]%</p>
+				<div class="input-group input-group-sm mb-2">
+					<div class="col-md-4">
+						<input :class="alertLevel" class="form-control form-control-sm inputComponent" type="number" step="0.1" v-model="item.mainValue" placeholder="Saisir la teneur" :name="item.label">
+					</div>
+					<span class="input-group-text"> % </span>
+				</div>
+			</div>
+			`
+		};
+
+		var ItemRepeatGroup = {
 			delimiters: ['%[', ']%'],
 			props: {
 				item: {
@@ -167,31 +349,40 @@
 			methods: {
 				addNewItem() {
 					let copyItem = JSON.parse(JSON.stringify(this.item.itemBase));
+					// LCQPlanManager.injectAdditionalProperties(copyItem);
+					// BizzinjectVueProperties(copyItem);
 					injectVueProperties_item(copyItem);
+
+
+					let copyItemInc = this.item.items.length + 1;
+					copyItem.label = copyItem.label + " " + copyItemInc;
 
 					this.item.items.push(copyItem);
 				},
-				removeItem() {
-					this.item.items.pop();
+				removeItem(id) {
+					this.item.items.splice(id, 1);
 				}
 			},
 			computed: {
 				alertLevel() {
+					this.item.items; /* <- reactivity hack = "gratuitous" access */;
 					return this.item.alertLvl();
 				}
 			},
 			template: `
-				<div :class="alertLevel" class="itemGroupComponent" >
-					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
-						<component :is="subItem.type" :item="subItem"></component>
-					</div>
-					<button @click="addNewItem">Ajouter</button>
-					<button @click="removeItem">Supprimer</button>
+			<div :class="alertLevel" class="shadow-sm mb-1 rounded">
+				<div v-for="(subItem, index) in item.items" :key="subItem.$$$idkey">
+					<component :is="subItem.$$$type" :item="subItem" ></component>
+					<button type="button" class="rounded btn btn-sm btn-outline-info m-2 ms-3" @click="removeItem(index)">Supprimer</button>
 				</div>
-				`
+			</div>
+			<div>
+				<button type="button" class="btn btn-sm btn-outline-primary my-2 w-100" @click="addNewItem">Ajouter %[item.itemBase.label]%</button>
+			</div>
+			`
 		};
 
-		const ItemCompoundGroup = {
+		var ItemCompoundGroup = {
 			delimiters: ['%[', ']%'],
 			props: {
 				item: {
@@ -200,24 +391,27 @@
 			},
 			computed: {
 				alertLevel() {
+					this.item.items; /* <- reactivity hack = "gratuitous" access */;
 					return this.item.alertLvl();
 				}
 			},
 			template: `
-				<div :class="alertLevel" class="itemGroupComponent" >
-					<p>%[item.label]%</p>
-					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
-						<component :is="subItem.type" :item="subItem"></component>
-					</div>
+			<div :class="alertLevel" class="itemGroupComponent shadow-sm p-1 ps-2 pt-2 mb-2 rounded">
+				<p class="col-5 mb-2"><input class="form-control form-control-sm rounded" v-model.trim="item.label"></p>
+				<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+					<component :is="subItem.$$$type" :item="subItem" class="shadow-sm"></component>
 				</div>
-				`
+			</div>
+			`
 		};
 
-		appLCQForm.component("check", ItemCheck);
-		appLCQForm.component("temperature", ItemTemperature);
-		appLCQForm.component("contentLevel", ItemContentLevel);
-		appLCQForm.component("repeatGroup", ItemRepeatGroup);
-		appLCQForm.component("compoundGroup", ItemCompoundGroup);
+
+
+		appLCQForm.component("lcq-item-check", ItemCheck);
+		appLCQForm.component("lcq-item-temperature", ItemTemperature);
+		appLCQForm.component("lcq-item-contentLevel", ItemContentLevel);
+		appLCQForm.component("lcq-item-repeatGroup", ItemRepeatGroup);
+		appLCQForm.component("lcq-item-compoundGroup", ItemCompoundGroup);
 		appLCQForm.mount('#appLCQForm');
 	</script>
 

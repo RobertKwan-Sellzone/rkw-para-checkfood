@@ -1,0 +1,147 @@
+<html>
+<head>
+<script>
+var formModel = 	{ // Formulaire de test
+	category: 'PATATE',
+	formLabel: 'Pomme de Terre',
+	items: [
+		{
+			type: 'check', label: 'Chaud ?',  isLabelEdit: true,
+		},
+		{
+			type: 'temperature', label: 'Chaud ?',  isLabelEdit: true,
+		},
+		{
+			type: 'contentLevel', label: 'Chaud ?',  isLabelEdit: true,
+		},
+		{
+			type: 'repeatGroup',
+			minCount: 1,
+			itemBase: {
+				type: 'compoundGroup', label: 'Recette', isLabelEdit: true,
+				items: [
+					{
+						type: 'check', label: 'Pour débutant ?'
+					},
+					{
+						type: 'contentLevel', label: 'Niveau de plaisir',
+						min_ROUGE: 20, min_ORANGE: 50, max_ROUGE: 100
+					},
+					{
+						type: 'repeatGroup',
+						minCount: 2,
+						itemBase: {
+							type: 'temperature', label: 'Bain d\'huile', isLabelEdit: true,
+							min_ORANGE: 165,
+						}
+					}
+				]
+			}
+		}
+	]
+};
+
+var formData =  {"category":"PATATE","formLabel":"Pomme de Terre","items":[{"type":"temperature","label":"Chaud ?","mainValue":"250","$$$idkey":37,"$$$type":"lcq-item-temperature"},{"type":"repeatGroup","minCount":1,"itemBase":{"type":"compoundGroup","label":"Recette","items":[{"type":"check","label":"Pour débutant ?"},{"type":"contentLevel","label":"Niveau de plaisir","min_ROUGE":20,"min_ORANGE":50,"max_ROUGE":100},{"type":"repeatGroup","minCount":2,"itemBase":{"type":"temperature","label":"Bain d'huile","min_ORANGE":165}}],"isLabelEdit":true},"items":[{"type":"compoundGroup","label":"Pommes à l'huile","items":[{"type":"check","label":"Pour débutant ?","mainValue":"ok","$$$idkey":40,"$$$type":"lcq-item-check"},{"type":"contentLevel","label":"Niveau de plaisir","min_ROUGE":20,"min_ORANGE":50,"max_ROUGE":100,"mainValue":"12","$$$idkey":41,"$$$type":"lcq-item-contentLevel"},{"type":"repeatGroup","minCount":2,"itemBase":{"type":"temperature","label":"Bain d'huile","min_ORANGE":165,"isLabelEdit":true},"items":[{"type":"temperature","label":"Bain d'huile 1","min_ORANGE":165,"mainValue":"120","$$$idkey":43,"$$$type":"lcq-item-temperature"},{"type":"temperature","label":"Bain d'huile 2","min_ORANGE":165,"mainValue":"120","$$$idkey":44,"$$$type":"lcq-item-temperature"}],"$$$idkey":42,"$$$type":"lcq-item-repeatGroup"}],"$$$idkey":39,"$$$type":"lcq-item-compoundGroup"},{"type":"compoundGroup","label":"Frites","items":[{"type":"check","label":"Pour débutant ?","mainValue":"none","$$$idkey":46,"$$$type":"lcq-item-check"},{"type":"contentLevel","label":"Niveau de plaisir","min_ROUGE":20,"min_ORANGE":50,"max_ROUGE":100,"mainValue":"45","$$$idkey":47,"$$$type":"lcq-item-contentLevel"},{"type":"repeatGroup","minCount":2,"itemBase":{"type":"temperature","label":"Bain d'huile","min_ORANGE":165,"isLabelEdit":true},"items":[{"type":"temperature","label":"Bain d'huile 1","min_ORANGE":165,"mainValue":"180","$$$idkey":49,"$$$type":"lcq-item-temperature"},{"type":"temperature","label":"Bain d'huile 2","min_ORANGE":165,"mainValue":"123.4","$$$idkey":50,"$$$type":"lcq-item-temperature"}],"$$$idkey":48,"$$$type":"lcq-item-repeatGroup"}],"isLabelEdit":true,"$$$idkey":45,"$$$type":"lcq-item-compoundGroup"},{"type":"compoundGroup","label":"Pommes soufflées","items":[{"type":"check","label":"Pour débutant ?","mainValue":"nok","$$$idkey":52,"$$$type":"lcq-item-check"},{"type":"contentLevel","label":"Niveau de plaisir","min_ROUGE":20,"min_ORANGE":50,"max_ROUGE":100,"mainValue":"95","$$$idkey":53,"$$$type":"lcq-item-contentLevel"},{"type":"repeatGroup","minCount":2,"itemBase":{"type":"temperature","label":"Bain d'huile","min_ORANGE":165,"isLabelEdit":true},"items":[{"type":"temperature","label":"Bain d'huile 1","min_ORANGE":165,"mainValue":"230","$$$idkey":55,"$$$type":"lcq-item-temperature"},{"type":"temperature","label":"Bain d'huile 2","min_ORANGE":165,"mainValue":"170","$$$idkey":56,"$$$type":"lcq-item-temperature"}],"$$$idkey":54,"$$$type":"lcq-item-repeatGroup"}],"isLabelEdit":true,"$$$idkey":51,"$$$type":"lcq-item-compoundGroup"}],"$$$idkey":38,"$$$type":"lcq-item-repeatGroup"}],"reportDate":"2021-06-17T20:45:06.000Z"};
+
+// function _old_extractRepeatGroup(node, recordLeaves){
+// 	if (!node.items){
+// 		// - leaf node
+// 		if (recordLeaves)
+// 			return {type:'(placeholder)', label: node.label};
+// 		else
+// 			return null;
+// 	} else {
+// 		// - branch node
+
+// 		// this a heritable thing :-)
+// 		recordLeaves = recordLeaves || (node.type == 'repeatGroup');
+
+// 		let recorded = [];
+// 		for (let i=0; i<node.items.length; i++){
+// 			let childNode = node.items[i];
+
+// 			let childRecord = _old_extractRepeatGroup(childNode, recordLeaves);
+// 			if (childRecord) {
+// 				recorded.push(childRecord);
+// 			}
+// 		}
+
+// 		if (node.type == 'repeatGroup') {
+// 			// keep placeholders is OK
+// 		} else {
+// 			// get rid of placeholders
+// 			recorded = recorded.filter( rec => rec.type != '(placeholder)');
+// 		}
+
+// 		if ((recorded.length > 0) || (node.type == 'repeatGroup'))
+// 			return {type: node.type, label: node.label, items: recorded};
+// 		else
+// 			return {type:'(placeholder)', label: node.label};
+
+// 	}
+// }
+
+function extractRepeatGroup(node, collector){
+	if (!node.items) return;
+	for (let i=0; i<node.items.length; i++){
+		let childNode = node.items[i];
+
+		let childCollector;
+		if (node.type == 'repeatGroup') {
+
+			//TODO lot 2 : maybe use repeatGroup.label as a hidden key to ensure the semantics of the copy
+			childCollector = {label : childNode.label, items: []};
+			collector.items.push(childCollector);
+		} else {
+			childCollector = collector;
+		}
+
+
+		extractRepeatGroup(childNode, childCollector);
+	}
+}
+
+function reinjectRepeatGroup(node, collector){
+	if (node.type == 'repeatGroup') {
+		if (!node.items) node.items = [];
+		//TODO lot 2 : if .items is "pre-populated", there is a risk of duplication at reinjection... address it ?
+		for (let i=0; i<collector.items.length; i++){
+			let childCollector = collector.items[i];
+			let childNode = JSON.parse(JSON.stringify(node.itemBase));
+			childNode.label = childCollector.label;
+			node.items.push(childNode);
+			reinjectRepeatGroup(childNode, childCollector);
+		}
+	} else if (node.items) {
+		for (let i=0; i<node.items.length; i++){
+			let childNode = node.items[i];
+			reinjectRepeatGroup(childNode, collector);
+		}
+	}
+}
+
+
+
+
+
+console.log("Extraction");
+let collector = {items: []};
+extractRepeatGroup(formData, collector);
+console.log(formData);
+console.log(collector);
+
+
+console.log("Reinjection");
+console.log(formModel);
+reinjectRepeatGroup(formModel, collector);
+console.log(formModel);
+
+
+</script>
+</head>
+
+<body>
+
+	Open Dev Mode, please.
+</body>
+</html>

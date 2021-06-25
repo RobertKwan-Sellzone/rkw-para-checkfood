@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Proto-Questionnaire VueJS v.4</title>
+
+	<script src="https://unpkg.com/vue@next" defer></script>
+	<script src="./LCQ-definitions.js"></script>
+	<!-- script src="./conversions.js"></script -->
+	<script type="text/javascript">
+	
+		
+	var COUNTER_$$$idkey = 0;
+
+
+	function injectVueProperties_form(form) {
+		if (form.reportDate) {
+			//resolve ISO date string to Date obj
+			form.reportDate = new Date(form.reportDate);
+		} else {
+			//init to now()
+			form.reportDate = new Date();
+		}
+
+		for (let i = 0; i < form.items.length; i++) {
+			let item = form.items[i];
+			injectVueProperties_item(item);
+		}
+	}
+
+
+	function _itemCheck_alertLvl() {
+		if (this.mainValue == "none" && this.warn_NONE) {
+			return this.warn_NONE;
+		}
+		else if (this.mainValue == "nok" && this.warn_NOK) {
+			return this.warn_NOK;
+		}
+		else {
+			return ALERTE_VERTE;
+		}
+	}
+
+	function _itemNumeric_alertLvl() {
+		if (this.mainValue > this.max_ROUGE || this.mainValue < this.min_ROUGE) {
+			return ALERTE_ROUGE;
+		}
+		else if (this.mainValue > this.max_ORANGE || this.mainValue < this.min_ORANGE) {
+			return ALERTE_ORANGE;
+		}
+		else {
+			return ALERTE_VERTE;
+		}
+	}
+
+	function _itemGroup_alertLvl() {
+		function alerte2num(al) {
+			switch (al) {
+				case ALERTE_ROUGE: return 2;
+				case ALERTE_ORANGE: return 1;
+				case ALERTE_VERTE: default: return 0;
+			}
+		}
+		function num2alerte(num) {
+			switch (num) {
+				case 2: return ALERTE_ROUGE;
+				case 1: return ALERTE_ORANGE;
+				case 0: default: return ALERTE_VERTE;
+			}
+		}
+
+		// the group takes the most severe level of all sub items'
+		return num2alerte(this.items
+			.map(subItem => subItem.alertLvl())
+			.map(alerte2num)
+			.reduce((a, b) => (a > b ? a : b), 0) // a workaround to .reduce(Math.max, 0) not working
+		);
+	}
+
+
+	function injectVueProperties_item(item) {
+		item.$$$idkey = COUNTER_$$$idkey++;
+
+		switch (item.$$$type) {
+			case 'lcq-item-check': {
+				item.mainValue = 'none';
+				break;
+			}
+			case 'lcq-item-temperature':
+			case 'lcq-item-contentLevel': {
+				item.mainValue = null;
+				break;
+			}
+			case 'lcq-item-repeatGroup':
+				injectVueProperties_item(item.itemBase);
+			//fallthrough
+			case 'lcq-item-compoundGroup': {
+				// init items in containers
+				if (!Array.isArray(item.items)) {
+					item.items = [];
+				}
+				// walk container tree
+				for (let i = 0; i < item.items.length; i++) {
+					let subItem = item.items[i];
+					injectVueProperties_item(subItem);
+				}
+				break;
+			}
+		}
+
+		// inject computed "alertLvl"
+		switch (item.$$$type) {
+			case 'lcq-item-check': item.alertLvl = _itemCheck_alertLvl; break;
+			case 'lcq-item-temperature': item.alertLvl = _itemNumeric_alertLvl; break;
+			case 'lcq-item-contentLevel': item.alertLvl = _itemNumeric_alertLvl; break;
+			case 'lcq-item-repeatGroup': item.alertLvl = _itemGroup_alertLvl; break;
+			case 'lcq-item-compoundGroup': item.alertLvl = _itemGroup_alertLvl; break;
+		}
+
+	}
+	
+	
+	function buildouille() {
+
+		let originalForm = {
+			category: 'HUILES',
+			formLabel: 'Huiles de cuisse',
+			items: [
+				{
+					$$$type: 'lcq-item-repeatGroup',
+					minCount: 1, maxCount: 20,
+					itemBase: {
+						$$$type: 'lcq-item-compoundGroup', label: 'Bac {i}',
+						items: [
+							{
+								$$$type: 'lcq-item-temperature', label: 'Température de coding',
+								min_ORANGE: 165,
+							},
+							{
+								$$$type: 'lcq-item-check', label: 'Niveau d\'huile de coude',
+								warn_NOK: 'ALERTE_ORANGE', warn_NONE: 'ALERTE_ROUGE',
+							},
+							{
+								$$$type: 'lcq-item-contentLevel', label: 'Relevé du composé nordique',
+								max_ORANGE: 20, max_ROUGE: 22
+							}
+						]
+					}
+				}
+			]
+		};
+		// same as :
+		// let originalForm = LCQ_FORMS.find(form => form.category == categ);
+
+		// JSON-based deep copy
+		let copyForm = JSON.parse(JSON.stringify(originalForm));
+
+		// add properties needed for VueJS rendering
+		injectVueProperties_form(copyForm);
+
+		return copyForm;
+	}
+
+
+
+
+
+
+</script>
+
+	<style>
+		.itemComponent {
+			border: 3px outset rgb(157, 129, 194);
+			border-radius: 8%;
+		}
+
+		.itemGroupComponent {
+			border: 12px solid rgb(86, 107, 106);
+		}
+
+		.itemGroupComponent.ALERTE_VERTE {
+			border-color: green;
+		}
+
+		.itemGroupComponent.ALERTE_ORANGE {
+			border-color: orange;
+		}
+
+		.itemGroupComponent.ALERTE_ROUGE {
+			border-color: red;
+		}
+
+		.itemComponent.ALERTE_VERTE {
+			background: green;
+		}
+
+		.itemComponent.ALERTE_ORANGE {
+			background: orange;
+		}
+
+		.itemComponent.ALERTE_ROUGE {
+			background: red;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div id="appLCQForm">
+		<select name="category" v-model="pickedCateg" @change="selectCateg">
+			<option value="-undefined-">(sélectionnez une catégorie)</option>
+			<option v-for="form in forms" :value="form.category">%[form.formLabel]%</option>
+		</select>
+		<button @click="showState">ETAT</button>
+		<div>
+			<h1>%[myNewForm.formLabel]%</h1>
+			<div v-for="item in myNewForm.items" :key="item.$$$idkey">
+				<component :is="item.$$$type" :item="item"></component>
+				<hr>
+			</div>
+		</div>
+	</div>
+
+	<script type="module">
+
+		const appLCQForm = Vue.createApp({
+			delimiters: ['%[', ']%'],
+			data() {
+				return {
+					myNewForm: '',
+					pickedCateg: '-undefined-',
+					forms: LCQ_FORMS,
+				}
+			},
+			methods: {
+				selectCateg() {
+					 this.myNewForm = buildouille();
+					 console.log(this.myNewForm);
+				},
+				showState() {
+					console.log(this.myNewForm);
+				}
+			},
+		});
+var CheckFood_LCQ = {
+		ItemCheck : {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				}
+			},
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="radio" :id="'ok_' +item.$$$idkey" value="ok" v-model="this.item.mainValue" />
+					<label :for="'ok_' + item.$$$idkey">Fait</label>
+
+					<input type="radio" :id="'nok_' + item.$$$idkey" value="nok" v-model="this.item.mainValue" />
+					<label :for="'nok_' + item.$$$idkey">Pas fait</label>
+
+					<input type="radio" :id="'none_' + item.$$$idkey" value="none" v-model="this.item.mainValue" />
+					<label :for="'none_' + item.$$$idkey">Pas encore fait</label>
+				</div>
+				`
+		},
+
+		ItemTemperature : {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="number" step="0.1" v-model="item.mainValue" placeholder="Saisir la température" :name="item.label">°C
+				</div>
+				`
+		},
+
+		ItemContentLevel : {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+				<div :class="alertLevel" class="itemComponent">
+					<p>%[item.label]%</p>
+					<input type="number" step="0.1" v-model="item.mainValue" placeholder="Saisir la température" :name="item.label">%
+				</div>
+				`
+		},
+
+		ItemRepeatGroup : {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			methods: {
+				addNewItem() {
+					let copyItem = JSON.parse(JSON.stringify(this.item.itemBase));
+					injectVueProperties_item(copyItem);
+
+					this.item.items.push(copyItem);
+				},
+				removeItem() {
+					this.item.items.pop();
+				}
+			},
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+				<div :class="alertLevel" class="itemGroupComponent" >
+					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+						<component :is="subItem.$$$type" :item="subItem"></component>
+					</div>
+					<button @click="addNewItem">Ajouter</button>
+					<button @click="removeItem">Supprimer</button>
+				</div>
+				`
+		},
+
+		ItemCompoundGroup : {
+			delimiters: ['%[', ']%'],
+			props: {
+				item: {
+					type: Object,
+				},
+			},
+			computed: {
+				alertLevel() {
+					return this.item.alertLvl();
+				}
+			},
+			template: `
+				<div :class="alertLevel" class="itemGroupComponent" >
+					<p>%[item.label]%</p>
+					<div v-for="subItem in item.items" :key="subItem.$$$idkey">
+						<component :is="subItem.$$$type" :item="subItem"></component>
+					</div>
+				</div>
+				`
+		}
+	}
+
+		appLCQForm.component("lcq-item-check", CheckFood_LCQ.ItemCheck);
+		appLCQForm.component("lcq-item-temperature", CheckFood_LCQ.ItemTemperature);
+		appLCQForm.component("lcq-item-contentLevel", CheckFood_LCQ.ItemContentLevel);
+		appLCQForm.component("lcq-item-repeatGroup", CheckFood_LCQ.ItemRepeatGroup);
+		appLCQForm.component("lcq-item-compoundGroup", CheckFood_LCQ.ItemCompoundGroup);
+		appLCQForm.mount('#appLCQForm');
+	</script>
+
+</body>
+
+
+
+</html>
