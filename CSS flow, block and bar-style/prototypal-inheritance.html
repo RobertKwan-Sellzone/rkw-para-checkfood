@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>prototypal inheritance</title>
+	<meta charset="utf-8">
+
+	<script>
+		var CheckItem = {
+			value: "ok"
+		};
+		var CheckTemperature = {
+			value: 200
+		};
+		
+		console.log (CheckItem);
+		console.log (CheckTemperature);
+		// notice how the debugger is affected "sort-of retroactively"
+		
+		
+		var Item =  {
+			readonly : true,
+			options: {readonly : true},
+			blabla(){
+				return "blaba"+this.value;
+			}
+		};
+
+
+		CheckItem.__proto__ = Item;
+		Object.setPrototypeOf(CheckTemperature, Item);
+
+
+
+
+
+		console.log (CheckItem.readonly        ? CheckItem.blabla()        : "bah quoi");
+		console.log (CheckTemperature.readonly ? CheckTemperature.blabla() : "bah quoi");
+		
+	</script>
+	
+</head>
+
+<body>
+		
+</body>
+</html>

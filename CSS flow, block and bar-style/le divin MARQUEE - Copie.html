@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CSS replacement for MARQUEE</title>
+	<meta charset="iso-8859-1">
+
+	<style>	
+		.marquee {
+			overflow: hidden;
+		}
+		.marquee * {    
+			display : inline-block;
+			white-space: nowrap;
+			
+			padding-left: 100%;
+			animation: marquee 10s linear infinite;
+		}
+		@keyframes marquee {
+			0%   { transform: translate(0, 0); }
+			100% { transform: translate(-100%, 0); }
+		}
+		
+/*
+    width: 150px; height : 3em;
+	background-color: pink;
+*/
+	</style>
+
+</head>
+
+<body>
+
+	<div class="marquee">
+		<span>
+	Test d'un text beaucoup, beaucoup trop trop long pour être rendu ici
+	</span>
+</div>
+</body>
+</html>

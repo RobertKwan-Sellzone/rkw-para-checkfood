@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Le bouton qui grandit</title>
+	<meta charset="utf-8">
+		<style>
+		
+
+		/* oui, les 3 sont nécessaires ! */
+		html {height:100%}
+		body {height:100%}
+		.row {height:100%; background: pink;}
+		
+		
+		.le-texte {background: cyan; }
+		
+		img.icon {
+			background-image : url(sarko-grimace2.jpg);
+			background-size : contain;
+			width: 100px;
+			height: 80px;
+		}
+
+	
+		button {
+			height:60%; /* c'est une façon d'en modifier la hauteur facilement */
+			width :25%;
+			text-align : middle;
+			vertical-align : top;
+		}
+	
+	/* __________________________________________________________________________
+	ci-dessous, la barre dont on se fiche,
+	(et qu'on ne va plus regarder)
+	*/	
+
+		
+		.progress {}
+		.progress-bar {height: 3px; display:inline-block;}
+		.progress-bar.youpi{background-color:green; width:30%;}
+		.progress-bar.beuh {background-color:red; width:70%;}
+		
+		
+		button
+		.progress {
+			position: relative;
+			display:inline-block; width:80%;
+			//border: 5px solid blue;
+			line-height: 0;
+			border-radius: 1em;
+			overflow : hidden;
+			background-color:pink;
+		}
+
+		button
+		.progress-bar {height: 2em; display:inline-block;}
+		
+		button
+		.progress::before {
+			content : "";
+			position: absolute;
+			width:100%; height:100%;			
+			opacity: 0.5;
+			display: block;
+
+			border : 5px outset white;
+			border-radius: 20em;
+			box-sizing: border-box;
+		}
+
+	</style>
+
+</head>
+
+<body>
+
+		<div class="row">
+			<button>
+				<img class="icon">
+				<br>
+				<span class="le-texte">Le cas par défaut : centrage vertical</span>
+				<div class="progress"><div class="progress-bar youpi"></div><div class="progress-bar beuh"></div></div>
+			</button>
+			
+			
+			
+			<button style="position:relative">
+				<img class="icon" style="position: absolute; top: 10px; left: 2px;">
+				
+				<span class="le-texte">à l'ancienne : positionnement absolu</span>
+				<div class="progress"  style="position: absolute; bottom: 10px; left: 2px;"><div class="progress-bar youpi"></div><div class="progress-bar beuh"></div></div>
+			</button>
+			
+			
+			
+			<button style="display: inline flex;
+			  flex-direction: column;">
+				<img class="icon">
+				<span class="le-texte">Et maintenant, avec un flexbox</span>
+				<div class="progress"><div class="progress-bar youpi"></div><div class="progress-bar beuh"></div></div>
+			</button>			
+		</div>
+		
+</body>
+</html>
