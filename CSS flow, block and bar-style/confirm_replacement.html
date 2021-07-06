@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>some confirm dialog</title>
+	<meta charset="utf-8">
+	
+	<script src="includes/jquery-3.6.0.min.js"></script>
+	<script>
+		function changecolor(btn, col1, col2){
+			/*
+			if (confirm("Change to col 1 or 2 ?")) {
+				btn.style.backgroundColor = col1;
+			} else {
+				btn.style.backgroundColor = col2;
+			}
+			*/
+			
+			altConfirm("Which color ?",
+			()=>{
+				console.log('I just left.');
+			},
+			{
+				label:'Pink', 
+				handler(){
+					btn.style.backgroundColor = '#faa';
+				}
+			},
+			{
+				label:'Green', 
+				handler(){
+					btn.style.backgroundColor = '#9f9';
+				}
+			});
+		}
+		
+		function altConfirm(msg, defaultAction, ...choiceObjs) {
+			let modal = $("#modal");
+			modal.show();
+			
+			$("#modal .msg").text(msg);
+			$("#modal .cancelBtn").off('click.altConfirm')
+			$("#modal .cancelBtn").on('click.altConfirm', ()=>{
+				defaultAction();
+				modal.hide();
+			});
+			//TODO similarly, set defaultAction to every dismiss action
+			
+			let buttons = $("#modal .buttons");
+			buttons.empty();
+			choiceObjs.forEach((obj) => {
+				let newButton = $("<button></button>");
+				newButton.text(obj.label);
+				newButton.on('click.altConfirm', ()=>{
+					obj.handler();
+					modal.hide();
+				});
+				
+				buttons.append(newButton);
+			});
+		}
+	</script>
+	
+</head>
+
+<body>
+
+	<button onclick="changecolor(this, 'pink', 'yellow')">
+		initiator button
+	</button>
+		
+	<div id="modal" style="margin:3em; padding:3em; border:1px solid black; display:none">
+		<button class="cancelBtn" style="float:right">X</button>
+		<div class="msg"></div>
+		<div class="buttons"></div>
+	</div>
+
+</body>
+</html>
