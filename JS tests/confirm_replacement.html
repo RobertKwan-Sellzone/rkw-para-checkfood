@@ -15,12 +15,11 @@
 			}
 			*/
 			
+
 			altConfirm("Which color ?",
-			()=>{
-				console.log('I just left.');
-			},
 			{
-				label:'Pink', 
+				label:'Annuler',
+				isDefault : true,
 				handler(){
 					btn.style.backgroundColor = '#faa';
 				}
@@ -30,26 +29,39 @@
 				handler(){
 					btn.style.backgroundColor = '#9f9';
 				}
-			});
+			},
+			{
+				label:'Pink', 
+				handler(){
+					btn.style.backgroundColor = 'pink';
+				}
+			}
+			);
 		}
 		
-		function altConfirm(msg, defaultAction, ...choiceObjs) {
-			let modal = $("#modal");
+		function altConfirm(msg, ...choiceObjs) {
+		
+			// create modal
+			var modal = $(`
+				<div id="modal" style="margin:3em; padding:3em; border:1px solid black; display:none">
+					<button class="cancelBtn" style="float:right">X</button>
+					<div class="msg"></div>
+					<div class="buttons"></div>
+				</div>	
+			`);				
+			$("body").append(modal);
 			modal.show();
 			
 			$("#modal .msg").text(msg);
-			$("#modal .cancelBtn").off('click.altConfirm')
-			$("#modal .cancelBtn").on('click.altConfirm', ()=>{
-				defaultAction();
-				modal.hide();
-			});
-			//TODO similarly, set defaultAction to every dismiss action
-			
+
+			//TODO$("#modal .cancelBtn")  à rendre visible si utile.
+						
 			let buttons = $("#modal .buttons");
 			buttons.empty();
 			choiceObjs.forEach((obj) => {
 				let newButton = $("<button></button>");
 				newButton.text(obj.label);
+				newButton.on('click.altConfirm', obj.handler());
 				newButton.on('click.altConfirm', ()=>{
 					obj.handler();
 					modal.hide();
@@ -67,12 +79,6 @@
 	<button onclick="changecolor(this, 'pink', 'yellow')">
 		initiator button
 	</button>
-		
-	<div id="modal" style="margin:3em; padding:3em; border:1px solid black; display:none">
-		<button class="cancelBtn" style="float:right">X</button>
-		<div class="msg"></div>
-		<div class="buttons"></div>
-	</div>
 
 </body>
 </html>
