@@ -10,79 +10,72 @@
 			let btn = $(`<button>p.${pgindex}</button>`);
 			
 			const pg = pgindex; // closure with pgindex directly would behave... unexpectedly ;-)
-			btn.on("click", function(){changePos(pg,1);});
+			btn.on("click", function(){changePos(pg,2);});
 			
 			return btn;
 		}		
 
 
-		var NB_PAGES = 27;
+		var NB_PAGES = 30;
 		
-		var START_SPAN = 1;
-		var END_SPAN = 1;
+		var START_SPAN = 2;
+		var END_SPAN = 2;
 		
 		var LEFT_SPAN = 3;
 		var RIGHT_SPAN = 3;		
+		var ELLIPSIS_SIZE = 1; // margin taken from LEFT_SPAN and RIGHT_SPAN for ellipsis display (1 usually means that ellipsis takes the same place as one page link).
 
 		
-		function changePos(currentPos, ellipsisSize = 0){
-			let visiblePages = START_SPAN + END_SPAN + 1 + LEFT_SPAN + RIGHT_SPAN;
-			
-			
-			$("#shortened-bar").empty();
-			if (visiblePages >= NB_PAGES){// this includes both side overlap too
-				for (i=0; i<NB_PAGES; i++){ $("#shortened-bar").append(generateButton(i)); }
-			} else {			
-				let leftOverlap  = START_SPAN - currentPos + LEFT_SPAN /* + 0 */;
-				let rightOverlap = END_SPAN   + currentPos + RIGHT_SPAN - (NB_PAGES-1);
-			
-				if (leftOverlap >= 0) {
-					// continuous left side
-					for (i=0; i<(currentPos + RIGHT_SPAN + leftOverlap - ellipsisSize + 1); i++){
-						$("#shortened-bar").append(generateButton(i));
-					}
+		function changePos(currentPos){
+			let posSpanStart, posSpanEnd;
+			let leftOverlap, rightOverlap;
+		
+			if (START_SPAN + END_SPAN + 1 + LEFT_SPAN + RIGHT_SPAN >= NB_PAGES){// this includes both side overlap too
+				leftOverlap  = 1; //arbitrary positive
+				rightOverlap = 1; //arbitrary positive
+				posSpanStart = 0;
+				posSpanEnd   = NB_PAGES - 1;
+			} else {	
+				leftOverlap  = START_SPAN - currentPos + LEFT_SPAN /* + 0 */;
+				rightOverlap = END_SPAN   + currentPos + RIGHT_SPAN - (NB_PAGES-1);		
+				
+				if (leftOverlap >= 0) {						
+					posSpanStart = 0;
+					posSpanEnd   = currentPos + RIGHT_SPAN - ELLIPSIS_SIZE + leftOverlap;
 					
-					$("#shortened-bar").append("<button disabled>...</button>");
-					
-					
-					
-					for (i=(NB_PAGES - END_SPAN); i<NB_PAGES; i++){
-						$("#shortened-bar").append(generateButton(i));
-					}
-					
-					
-					
-				} else if (rightOverlap >= 0) {
-					// continuous right side
-					for (i=0; i<START_SPAN; i++){
-						$("#shortened-bar").append(generateButton(i));
-					}					
+				} else if (rightOverlap >= 0) {	
+					posSpanStart = currentPos - LEFT_SPAN  + ELLIPSIS_SIZE - rightOverlap;
+					posSpanEnd   = NB_PAGES - 1;
 
-					$("#shortened-bar").append("<button disabled>...</button>");
-					
-					for (i=(currentPos - LEFT_SPAN - rightOverlap + ellipsisSize); i<NB_PAGES; i++){
-						$("#shortened-bar").append(generateButton(i));
-					}
 				} else {
-					//discontinuous both sides
-					
-					for (i=0; i<START_SPAN; i++){
-						$("#shortened-bar").append(generateButton(i));
-					}
-					
-					$("#shortened-bar").append("<button disabled>...</button>");
-					
-					for (i=(currentPos - LEFT_SPAN + ellipsisSize); i<(currentPos + RIGHT_SPAN - ellipsisSize + 1); i++){
-						$("#shortened-bar").append(generateButton(i));
-					}					
-					
-					$("#shortened-bar").append("<button disabled>...</button>");					
-					
-					for (i=(NB_PAGES - END_SPAN); i<NB_PAGES; i++){
-						$("#shortened-bar").append(generateButton(i));
-					}					
-				}
+					posSpanStart = currentPos - LEFT_SPAN  + ELLIPSIS_SIZE;
+					posSpanEnd   = currentPos + RIGHT_SPAN - ELLIPSIS_SIZE;
+				}				
 			}
+							
+							
+			$("#shortened-bar").empty();
+			if (leftOverlap < 0) {
+				for (i=0; i<START_SPAN; i++){
+					$("#shortened-bar").append(generateButton(i));
+				}			
+				$("#shortened-bar").append("<button disabled>...</button>");
+			} 
+			
+			
+			for (i=posSpanStart; i<posSpanEnd +1 ; i++){
+				$("#shortened-bar").append(generateButton(i));
+			}
+			
+			
+			if (rightOverlap < 0) {
+				$("#shortened-bar").append("<button disabled>...</button>");					
+				for (i=(NB_PAGES - END_SPAN); i<NB_PAGES; i++){
+					$("#shortened-bar").append(generateButton(i));
+				}				
+			}
+
+			
 		}
 
 
