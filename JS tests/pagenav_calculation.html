@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>page nav calculations</title>
+	<meta charset="utf-8">
+	
+	<script src="includes/jquery-3.6.0.min.js"></script>
+	<script>
+		function generateButton(pgindex){
+			let btn = $(`<button>p.${pgindex}</button>`);
+			
+			const pg = pgindex; // closure with pgindex directly would behave... unexpectedly ;-)
+			btn.on("click", function(){changePos(pg,1);});
+			
+			return btn;
+		}		
+
+
+		var NB_PAGES = 27;
+		
+		var START_SPAN = 1;
+		var END_SPAN = 1;
+		
+		var LEFT_SPAN = 3;
+		var RIGHT_SPAN = 3;		
+
+		
+		function changePos(currentPos, ellipsisSize = 0){
+			let visiblePages = START_SPAN + END_SPAN + 1 + LEFT_SPAN + RIGHT_SPAN;
+			
+			
+			$("#shortened-bar").empty();
+			if (visiblePages >= NB_PAGES){// this includes both side overlap too
+				for (i=0; i<NB_PAGES; i++){ $("#shortened-bar").append(generateButton(i)); }
+			} else {			
+				let leftOverlap  = START_SPAN - currentPos + LEFT_SPAN /* + 0 */;
+				let rightOverlap = END_SPAN   + currentPos + RIGHT_SPAN - (NB_PAGES-1);
+			
+				if (leftOverlap >= 0) {
+					// continuous left side
+					for (i=0; i<(currentPos + RIGHT_SPAN + leftOverlap - ellipsisSize + 1); i++){
+						$("#shortened-bar").append(generateButton(i));
+					}
+					
+					$("#shortened-bar").append("<button disabled>...</button>");
+					
+					
+					
+					for (i=(NB_PAGES - END_SPAN); i<NB_PAGES; i++){
+						$("#shortened-bar").append(generateButton(i));
+					}
+					
+					
+					
+				} else if (rightOverlap >= 0) {
+					// continuous right side
+					for (i=0; i<START_SPAN; i++){
+						$("#shortened-bar").append(generateButton(i));
+					}					
+
+					$("#shortened-bar").append("<button disabled>...</button>");
+					
+					for (i=(currentPos - LEFT_SPAN - rightOverlap + ellipsisSize); i<NB_PAGES; i++){
+						$("#shortened-bar").append(generateButton(i));
+					}
+				} else {
+					//discontinuous both sides
+					
+					for (i=0; i<START_SPAN; i++){
+						$("#shortened-bar").append(generateButton(i));
+					}
+					
+					$("#shortened-bar").append("<button disabled>...</button>");
+					
+					for (i=(currentPos - LEFT_SPAN + ellipsisSize); i<(currentPos + RIGHT_SPAN - ellipsisSize + 1); i++){
+						$("#shortened-bar").append(generateButton(i));
+					}					
+					
+					$("#shortened-bar").append("<button disabled>...</button>");					
+					
+					for (i=(NB_PAGES - END_SPAN); i<NB_PAGES; i++){
+						$("#shortened-bar").append(generateButton(i));
+					}					
+				}
+			}
+		}
+
+
+		
+		$(document).ready(function(){
+			for (i=0; i<NB_PAGES; i++){
+				$("#full-bar").append(generateButton(i));
+			}
+		
+		});
+		
+		
+	</script>
+	
+</head>
+
+<body>
+		<div id="full-bar"></div>
+		<hr>
+		<div id="shortened-bar"></div>
+</body>
+</html>
