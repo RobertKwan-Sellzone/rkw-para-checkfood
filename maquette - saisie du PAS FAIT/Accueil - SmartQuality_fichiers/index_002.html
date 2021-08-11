@@ -1,0 +1,365 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"></head><body><pre>--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][Action call] Sy\Bootstrap\Application::__construct() in
+ 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Application.php
+ line 34 
+Call method indexAction
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][Action call] Sy\Bootstrap\Component\Page::__construct()
+ in 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Component/Page.php
+ line 24 
+Call method indexAction
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `owner_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user_profile WHERE `user_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 2
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_page WHERE `id` = ? AND `lang` = ?
+Parameters:
+Array
+(
+    [0] =&gt; home
+    [1] =&gt; fr
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Bootstrap\Db\User::getPermissions() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Db/User.php
+ line 30 
+Query:
+
+			(SELECT t_user_role_has_permission.id_permission AS permission
+			FROM t_user
+			INNER JOIN t_user_role_has_permission ON t_user.role = 
+t_user_role_has_permission.id_role
+			WHERE t_user.id = :id)
+			UNION
+			(SELECT permission
+			FROM t_user_has_permission
+			WHERE id = :id)
+		
+Parameters:
+Array
+(
+    [:id] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][Action call] Sy\Bootstrap\Application::__construct() in
+ 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Application.php
+ line 34 
+Call method indexAction
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `owner_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user_profile WHERE `user_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 2
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:19 [INFO][QueryLog] Project\Db\Checklists::retrievePOSHistory() 
+in /var/www/sellzone/checkfood/protected/src/Db/Checklists.php line 149 
+Query:
+
+			SELECT ckl.id,
+				ckl.user_id, ckl.pos_id, ckl.category,
+
+				DATE_FORMAT(ckl.created_at, '%Y-%m-%dT%TZ') AS created_at,
+				DATE_FORMAT(ckl.updated_at, '%Y-%m-%dT%TZ') AS updated_at,
+				DATE_FORMAT(ckl.reported_at, '%Y-%m-%dT%TZ') AS reported_at,
+
+				ckl.json_content,
+
+				usr.firstname, usr.lastname,
+				pos.name AS POS_NAME
+			FROM t_checklist ckl
+			LEFT JOIN t_user usr ON usr.id = ckl.user_id
+			LEFT JOIN t_point_of_sale pos ON pos.id = ckl.pos_id
+			WHERE ckl.pos_id = :pos_id
+				AND ckl.category &lt;&gt; :category
+				AND ckl.reported_at &gt;= ADDTIME(STR_TO_DATE(:after,'%Y-%m-%d'), 
+'08:00')
+				AND ckl.reported_at &lt; 
+ADDTIME(DATE_ADD(STR_TO_DATE(:before,'%Y-%m-%d'), INTERVAL 1 DAY), 
+'08:00')
+			ORDER BY ckl.category, ckl.updated_at
+				LIMIT 100
+		
+Parameters:
+Array
+(
+    [:pos_id] =&gt; 2
+    [:category] =&gt; -(ALL)-
+    [:after] =&gt; 2021-08-04
+    [:before] =&gt; 2021-08-04
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][Action call] Sy\Bootstrap\Application::__construct() in
+ 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Application.php
+ line 34 
+Call method indexAction
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][Action call] Sy\Bootstrap\Component\Page::__construct()
+ in 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Component/Page.php
+ line 24 
+Call method indexAction
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `owner_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_user_profile WHERE `user_id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 36
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_point_of_sale WHERE `id` = ?
+Parameters:
+Array
+(
+    [0] =&gt; 2
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Db\MySql\Crud::retrieve() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/mysql/src/Crud.php line 
+123 
+Query:
+SELECT * FROM t_page WHERE `id` = ? AND `lang` = ?
+Parameters:
+Array
+(
+    [0] =&gt; home
+    [1] =&gt; fr
+)
+
+
+--------------------------------------------------------------------------------
+2021-08-06
+ 10:53:24 [INFO][QueryLog] Sy\Bootstrap\Db\User::getPermissions() in 
+/var/www/sellzone/checkfood/protected/vendor/sy/bootstrap/src/Db/User.php
+ line 30 
+Query:
+
+			(SELECT t_user_role_has_permission.id_permission AS permission
+			FROM t_user
+			INNER JOIN t_user_role_has_permission ON t_user.role = 
+t_user_role_has_permission.id_role
+			WHERE t_user.id = :id)
+			UNION
+			(SELECT permission
+			FROM t_user_has_permission
+			WHERE id = :id)
+		
+Parameters:
+Array
+(
+    [:id] =&gt; 36
+)
+
+
+</pre></body></html>

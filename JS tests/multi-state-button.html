@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>multi-state button</title>
+	<meta charset="utf-8">
+	
+	<script src="includes/jquery-3.6.0.min.js"></script>
+	<script type="module">
+
+		// init button value (optional)
+		$("button.multi-state").each(function(){
+			let button = $(this);
+			
+			let name = button.data("multi-state-name");
+			if (!name) {
+				console.warn('Missing "data-multi-state-name" attribute for :');
+				console.warn(button);
+				return;
+			}
+			
+			let value = undefined;		
+			let linkedInputs = $(`input[name="${name}"]`);			
+			linkedInputs.each(function(){				
+				let input = $(this);
+				if (!value && input.prop('checked')){
+					value = input.attr('value');
+				}
+			});
+
+			if (value) {
+				button.attr('value', value);
+			}
+			
+		});	
+	
+
+	
+		$("button.multi-state").on("click", function(){
+			function checkTheBox(input, newState) {
+				let oldState = input.prop('checked');
+				
+				input.prop('checked', newState);
+				if (oldState != newState) {
+					input.trigger('input');
+					input.trigger('change');
+				}
+			}
+			
+			let button = $(this);
+			
+			let name = button.data("multi-state-name");
+			if (!name) {
+				console.warn('Missing "data-multi-state-name" attribute for :');
+				console.warn(button);
+				return;
+			}
+			
+			let value = undefined;
+			let prevIsSelected = false;			
+			
+			let linkedInputs = $(`input[name="${name}"]`);			
+			linkedInputs.each(function(){				
+				let input = $(this);
+				if (prevIsSelected) {
+					prevIsSelected = false;
+
+					// -> if prev was selected, select this (= "increment")
+					checkTheBox(input, true);
+					value = input.val();
+				} else {
+					if (!value) {
+						prevIsSelected = input.prop('checked');					
+					}
+					 // -> otherwise, unselect all others
+					checkTheBox(input, false);
+				}
+			});
+			if (prevIsSelected || !value) {
+				let input = linkedInputs.first();
+				checkTheBox(input, true);
+				value = input.val();
+			}
+			
+			button.val(value); // for styling purpose mainly (but is submitted too)
+			button.trigger('input');
+			button.trigger('change');
+		});
+	</script>
+	
+	
+	<style>
+		.multi-state::after {
+			content : attr(value);
+			
+		}
+	</style>
+</head>
+
+<body>
+
+		<form autocomplete="off">
+			<input type="checkbox" name="dayWeek" value="Lu"></input>Lundi<br>
+			<input type="checkbox" name="dayWeek" value="Ma" checked></input>Mardi (default)<br>
+			<input type="checkbox" name="dayWeek" value="Me"></input>Mercredi (event bound)<br>
+			<input type="checkbox" name="dayWeek" value="Je"></input>Jeudi<br>
+
+			<button type="button" name="btnSub" class="multi-state" data-multi-state-name="dayWeek">
+				value = 
+			</button>
+		</form>
+
+		<script>		
+			$('button[name="btnSub"]').on('input', function(){console.log('input :' + $(this).val());});
+			$('button[name="btnSub"]').on('change', function(){console.log('change :' + $(this).val());});
+			
+			//$('input[name="dayWeek"][value="Me"]').on('input', function(){console.log('Mercredi input :' + $(this).prop('checked'));});
+			$('input[name="dayWeek"][value="Me"]').on('change', function(){console.log('Mercredi change :' + $(this).prop('checked'));});			
+		</script>
+</body>
+</html>
