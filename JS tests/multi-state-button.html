@@ -88,33 +88,87 @@
 	</script>
 	
 	
+
 	<style>
-		.multi-state::after {
-			content : attr(value);
-			
-		}
+	/* basic version */
+	.multi-state.btnText::after {
+		content : attr(value);
+		
+	}
+	
+		
+	/* good-looking version */
+	.multi-state.btnSwitch {
+		border: 1px solid black;			
+		border-radius : 1em;
+		transition: background-color 0.2s ease, padding 0.2s ease-out;
+	}
+	.multi-state.btnSwitch::after {
+		content: "";
+		border: 1px solid black;
+		border-radius : 50%;
+		background: rgba(255,255,255,0.5);
+		
+		display: block;
+		width:1em; height:1em;
+		margin: 0.2em;
+	}
+	.multi-state.btnSwitch[value="L"] {
+		padding:0 2em 0 0em;
+		background-color: red;
+	}
+	.multi-state.btnSwitch[value="R"] {
+		padding:0 0em 0 2em;
+		background-color: green;
+	}		
+	.multi-state.btnSwitch[value="M"] {
+		padding:0 1em 0 1em;
+		background-color: grey;
+	}
+
+
+		
 	</style>
 </head>
 
 <body>
+	<h1>Multi-state button based on existing checkbox/radio set</h1>
+	<em>Open dev console!</em>
+	
+	<form autocomplete="off">
 
-		<form autocomplete="off">
-			<input type="checkbox" name="dayWeek" value="Lu"></input>Lundi<br>
-			<input type="checkbox" name="dayWeek" value="Ma" checked></input>Mardi (default)<br>
-			<input type="checkbox" name="dayWeek" value="Me"></input>Mercredi (event bound)<br>
-			<input type="checkbox" name="dayWeek" value="Je"></input>Jeudi<br>
+		<h2>value shown in button</h2>
+		
+		<input type="checkbox" name="dayWeek" value="Lu"></input>Lundi<br>
+		<input type="checkbox" name="dayWeek" value="Ma"></input>Mardi<br>
+		<input type="checkbox" name="dayWeek" value="Me"></input>Mercredi (event bound)<br>
+		<input type="checkbox" name="dayWeek" value="Je"></input>Jeudi<br>
+		<input type="checkbox" name="dayWeek" value="Ve"></input>Vendredi<br>
+		<input type="checkbox" name="dayWeek" value="Sa"></input>Samedi<br>
+		<input type="checkbox" name="dayWeek" value="Di" checked></input>Dimanche<br>
 
-			<button type="button" name="btnSub" class="multi-state" data-multi-state-name="dayWeek">
-				value = 
-			</button>
-		</form>
+		<button type="button" name="btnDayWeek" class="multi-state btnText" data-multi-state-name="dayWeek">
+			value = 
+		</button>
+		
+		<hr></hr>
 
-		<script>		
-			$('button[name="btnSub"]').on('input', function(){console.log('input :' + $(this).val());});
-			$('button[name="btnSub"]').on('change', function(){console.log('change :' + $(this).val());});
-			
-			//$('input[name="dayWeek"][value="Me"]').on('input', function(){console.log('Mercredi input :' + $(this).prop('checked'));});
-			$('input[name="dayWeek"][value="Me"]').on('change', function(){console.log('Mercredi change :' + $(this).prop('checked'));});			
-		</script>
+		<h2>value shown through style</h2>
+
+		<input type="checkbox" name="somePosition" value="M" checked></input>Middle<br>			
+		<input type="checkbox" name="somePosition" value="L"></input>Left<br>
+		<input type="checkbox" name="somePosition" value="R"></input>Right<br>
+
+		<button type="button" name="btnSomePosition" class="multi-state btnSwitch" data-multi-state-name="somePosition">
+		</button>
+	</form>
+
+	<script>		
+		$('button[name="btnDayWeek"]').on('input', function(){console.log('button dayWeek input :' + $(this).val());});
+		$('button[name="btnDayWeek"]').on('change', function(){console.log('button dayWeek  change :' + $(this).val());});
+		
+		$('input[name="dayWeek"][value="Me"]').on('input', function(){console.log('checkbox Mercredi input :' + $(this).prop('checked'));});
+		$('input[name="dayWeek"][value="Me"]').on('change', function(){console.log('checkbox Mercredi change :' + $(this).prop('checked'));});			
+	</script>
 </body>
 </html>

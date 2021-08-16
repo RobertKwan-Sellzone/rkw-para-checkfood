@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>multi-state button 2</title>
+	<meta charset="utf-8">
+	
+	<script src="includes/jquery-3.6.0.min.js"></script>
+	<script type="module">
+	
+		$("button.multi-state").on("click", function(){			
+			let button = $(this);
+			
+			let values = button.data("multi-state-values");
+			if (!Array.isArray(values) || values.length==0) {
+				console.warn('"multi-state-values" data attribute expected as a JSON array of string values');
+				console.warn(button);
+				return;
+			}
+			
+			let value = button.val();
+			let i = values.indexOf(value);
+			i = (i+1) % values.length;
+			value = values[i];
+			
+			
+			button.val(value); // for styling purpose mainly (but is submitted too)
+			button.trigger('input');
+			button.trigger('change');
+		});
+	</script>
+	
+	
+	<style>
+	/* basic version */
+	.multi-state.btnText::after {
+		content : attr(value);
+		
+	}
+	
+	
+	/* good-looking version */
+	.multi-state.btnSwitch {
+		border: 1px solid black;			
+		border-radius : 1em;
+		transition: background-color 0.2s ease, padding 0.2s ease-out;
+	}
+	.multi-state.btnSwitch::after {
+		content: "";
+		border: 1px solid black;
+		border-radius : 50%;
+		background: rgba(255,255,255,0.5);
+		
+		display: block;
+		width:1em; height:1em;
+		margin: 0.2em;
+	}
+	.multi-state.btnSwitch[value="L"] {
+		padding:0 2em 0 0em;
+		background-color: red;
+	}
+	.multi-state.btnSwitch[value="R"] {
+		padding:0 0em 0 2em;
+		background-color: green;
+	}		
+	.multi-state.btnSwitch[value="M"] {
+		padding:0 1em 0 1em;
+		background-color: grey;
+	}
+
+		
+	</style>
+</head>
+
+<body>
+	<h1>Multi-state button with internal data <i>((much) simpler JS)</i></h1>
+	<em>Open dev console!</em>
+
+	<form autocomplete="off">
+	
+		<h2>value shown in button</h2>
+	
+		<button type="button" name="btnDayWeek" class="multi-state btnText" data-multi-state-values='["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"]' value="M">
+			value = 
+		</button>
+				
+		<hr></hr>
+
+		<h2>value shown through style</h2>
+		
+		<button type="button" name="btnSomePosition" class="multi-state btnSwitch" data-multi-state-values='["M", "R", "L"]' value="M">
+		</button>			
+	</form>
+
+	<script>		
+		$('button[name="btnDayWeek"]').on('input', function(){console.log('button dayWeek input :' + $(this).val());});
+		$('button[name="btnDayWeek"]').on('change', function(){console.log('button dayWeek  change :' + $(this).val());});
+	</script>
+</body>
+</html>
