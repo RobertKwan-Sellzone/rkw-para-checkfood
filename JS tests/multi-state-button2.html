@@ -4,7 +4,7 @@
 	<title>multi-state button 2</title>
 	<meta charset="utf-8">
 	
-	<script src="includes/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 	<script type="module">
 	
 		$("button.multi-state").on("click", function(){			
@@ -67,18 +67,39 @@
 		background-color: grey;
 	}
 
+	
+	/* "material++" version */
+	.multi-state.btnSwitch.plusPlus {
+		border: 3px inset white;
+		border-radius : 6px;
+		transition: background-color 0.2s ease, padding 0.2s ease-out;
+		
+		box-shadow : inset 2px 5px 4px 0 rgba(0,0,0, 0.6);
+	}
+	.multi-state.btnSwitch.plusPlus::after {
+		content: "";
+		border: 2px outset white;
+		border-radius : 3px;
+		background: repeating-linear-gradient(90deg, grey, white 35%);
+		opacity: 0.8;
+		
+		display: block;
+		width:1em; height:1em;
+		margin: 1px;
+		box-shadow : 2px 5px 4px 0 rgba(0,0,0, 0.6);
+	}
+
 		
 	</style>
 </head>
 
 <body>
 	<h1>Multi-state button with internal data <i>((much) simpler JS)</i></h1>
-	<em>Open dev console!</em>
 
 	<form autocomplete="off">
 	
 		<h2>value shown in button</h2>
-	
+		<em>Open dev console for this one!</em><br>
 		<button type="button" name="btnDayWeek" class="multi-state btnText" data-multi-state-values='["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"]' value="M">
 			value = 
 		</button>
@@ -88,7 +109,14 @@
 		<h2>value shown through style</h2>
 		
 		<button type="button" name="btnSomePosition" class="multi-state btnSwitch" data-multi-state-values='["M", "R", "L"]' value="M">
-		</button>			
+		</button>		
+		
+		<hr></hr>
+		
+		<h2>Especially for Mike <pre style="display:inline">&lt;3</pre></h2>
+		
+		<button type="button" name="btnSomePosition2" class="multi-state btnSwitch plusPlus" data-multi-state-values='["M", "R", "L"]' value="M">
+		</button>		
 	</form>
 
 	<script>		
