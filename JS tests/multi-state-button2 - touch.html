@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>multi-state button 2 with touch</title>
+	<meta charset="utf-8">
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+	<script type="module">
+	
+		/* if increment is supplied, the button values DOES NOT "rotate" past first or last value */
+		function changeMultiStateValue(buttonElement, increment) {
+			let button = $(buttonElement);
+			let values = button.data("multi-state-values");
+			if (!Array.isArray(values) || values.length==0) {
+				console.warn('"multi-state-values" data attribute expected as a JSON array of string values');
+				console.warn(button);
+				return;
+			}
+						
+			let value = button.val();
+			let i = values.indexOf(value);
+			if (typeof increment == 'undefined') {
+				i = (i + 1) % values.length;
+			} else {
+				i += increment;
+				if (i<0) i=0;
+				if (i>= values.length) i=(values.length-1);
+			}
+			value = values[i];			
+			
+			button.val(value); // for styling purpose mainly (but is submitted too)
+			button.trigger('input');
+			button.trigger('change');
+		}
+	
+		$("button.multi-state").on("click", function(){
+			changeMultiStateValue(this);
+		});
+		
+		
+		$("button.multi-state").each(function(){
+			let button = this;
+
+			var startX, startY, currX, currY;
+			button.addEventListener("touchstart", function(e){
+				e.preventDefault(); //disable scrolling when swiping
+				var t = e.touches[0];
+				[startX,startY,  currX,currY] = [t.screenX,t.screenY,  t.screenX,t.screenY];
+			});
+			button.addEventListener("touchmove", function(e){
+				var t = e.touches[0];
+				[currX,currY] = [t.screenX, t.screenY];
+			});
+			button.addEventListener("touchend", function(e){
+				const HORIZ_TO_VERT_RATIO = 2;
+				const PX_TO_INC_RATIO = 15;
+				
+				var deltaX = currX - startX;
+				var deltaY = currY - startY;				
+								
+				if (Math.abs(deltaX / deltaY) > HORIZ_TO_VERT_RATIO 
+				 && Math.abs(deltaX) > PX_TO_INC_RATIO) {
+					changeMultiStateValue(button, Math.round(deltaX / PX_TO_INC_RATIO));
+				}
+			});				
+		});
+	</script>
+	
+	
+	<style>
+	/* basic version */
+	.multi-state.btnText::after {
+		content : attr(value);
+		
+	}
+	
+	
+	/* good-looking version */
+	.multi-state.btnSwitch {
+		border: 1px solid black;			
+		border-radius : 1em;
+		transition: background-color 0.2s ease, padding 0.2s ease-out;
+	}
+	.multi-state.btnSwitch::after {
+		content: "";
+		border: 1px solid black;
+		border-radius : 50%;
+		background: rgba(255,255,255,0.5);
+		
+		display: block;
+		width:1em; height:1em;
+		margin: 0.2em;
+	}
+	.multi-state.btnSwitch[value="L"] {
+		padding:0 2em 0 0em;
+		background-color: red;
+	}
+	.multi-state.btnSwitch[value="R"] {
+		padding:0 0em 0 2em;
+		background-color: green;
+	}		
+	.multi-state.btnSwitch[value="M"] {
+		padding:0 1em 0 1em;
+		background-color: grey;
+	}
+
+	
+	/* "material++" version */
+	.multi-state.btnSwitch.plusPlus {
+		border: 3px inset white;
+		border-radius : 6px;
+		transition: background-color 0.2s ease, padding 0.2s ease-out;
+		
+		box-shadow : inset 2px 5px 4px 0 rgba(0,0,0, 0.6);
+	}
+	.multi-state.btnSwitch.plusPlus::after {
+		content: "";
+		border: 2px outset white;
+		border-radius : 3px;
+		background: repeating-linear-gradient(90deg, grey, white 35%);
+		opacity: 0.8;
+		
+		display: block;
+		width:1em; height:1em;
+		margin: 1px;
+		box-shadow : 2px 5px 4px 0 rgba(0,0,0, 0.6);
+	}
+
+		
+	</style>
+</head>
+
+<body>
+	<h1>Multi-state button with internal data</h1>
+	<h2>... with swipe support on mobiles</h2>
+
+	<form autocomplete="off">
+	
+
+		<h2>Basic style</h2>
+		
+		<button type="button" name="btnSomePosition" class="multi-state btnSwitch" data-multi-state-values='["L", "M", "R"]' value="M">
+		</button>		
+		
+		<hr></hr>
+		
+		<h2>Mike style</h2>
+		
+		<button type="button" name="btnSomePosition2" class="multi-state btnSwitch plusPlus" data-multi-state-values='["L", "M", "R"]' value="M">
+		</button>		
+	</form>
+
+	<script>		
+		//$('button.btnSwitch').on('input', function(){console.log('button input :' + $(this).val());});
+		$('button.btnSwitch').on('change', function(){console.log('button change :' + $(this).val());});
+	</script>
+</body>
+</html>
