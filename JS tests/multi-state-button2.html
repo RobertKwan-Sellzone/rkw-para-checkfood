@@ -3,6 +3,7 @@
 <head>
 	<title>multi-state button 2</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 	<script type="module">
@@ -43,6 +44,7 @@
 		border: 1px solid black;			
 		border-radius : 1em;
 		transition: background-color 0.2s ease, padding 0.2s ease-out;
+		outline: none; /* mobile outline */
 	}
 	.multi-state.btnSwitch::after {
 		content: "";
@@ -95,6 +97,7 @@
 		border: 1px solid black;			
 		border-radius : 1em;
 		transition: background-color 1s ease, padding 0.2s ease-out, border-radius 0.2s ease-out;
+		outline: none; /* mobile outline */
 	}
 	.multi-state.btnCheckfood::after {
 		content: "";

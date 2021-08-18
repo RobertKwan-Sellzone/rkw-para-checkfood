@@ -3,6 +3,7 @@
 <head>
 	<title>multi-state button 2 with touch</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 	<script type="module">
@@ -41,15 +42,18 @@
 		$("button.multi-state").each(function(){
 			let button = this;
 
+			/* note : usually screenX / screenY are better for "sterotyped gestures"
+			but in our case, clientX / clientY are better suited because they are zoom-dependent ! */
+
 			var startX, startY, currX, currY;
 			button.addEventListener("touchstart", function(e){
 				e.preventDefault(); //disable scrolling when swiping
 				var t = e.touches[0];
-				[startX,startY,  currX,currY] = [t.screenX,t.screenY,  t.screenX,t.screenY];
+				[startX,startY,  currX,currY] = [t.clientX,t.clientY,  t.clientX,t.clientY];
 			});
 			button.addEventListener("touchmove", function(e){
 				var t = e.touches[0];
-				[currX,currY] = [t.screenX, t.screenY];
+				[currX,currY] = [t.clientX, t.clientY];
 			});
 			button.addEventListener("touchend", function(e){
 				const HORIZ_TO_VERT_RATIO = 2;
@@ -80,6 +84,7 @@
 		border: 1px solid black;			
 		border-radius : 1em;
 		transition: background-color 0.2s ease, padding 0.2s ease-out;
+		outline: none; /* mobile outline */
 	}
 	.multi-state.btnSwitch::after {
 		content: "";
